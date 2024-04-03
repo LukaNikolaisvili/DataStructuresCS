@@ -22,10 +22,19 @@ public class PointQuadTree
         B = new Node[(int)Math.Pow(2, dimensions)];
     }
 
+    // ComparePoints method compares two d-dimensional points and maps the result to an index
     public int ComparePoints(int[] point1, int[] point2)
     {
-
-        return 0;
+        int index = 0;
+        for (int i = 0; i < point1.Length; i++)
+        {
+            // Update index based on the comparison of coordinates at each dimension
+            if (point1[i] < point2[i])
+                index = 2 * index + 1;  // Left branch
+            else
+                index = 2 * index + 2; // Right branch
+        }
+        return index;
 
     }
 
@@ -39,31 +48,42 @@ public class PointQuadTree
 
 
     public static void Main(string[] args)
-    {   int count = 1;
-        while (count <=3)
-        {
-            TwoThreeFourTree<int> tree = new TwoThreeFourTree<int>();
-            tree.Insert(1);
-            tree.Insert(2);
-            tree.Insert(3);
-            tree.Print();
-            Console.WriteLine("Last Assignment Wooohooo!");
-            Console.WriteLine(".\n" +
-"   ……..…../´¯/)………… (\\¯`\\\n" +
-"   …………/….//……….. …\\\\….\\\n" +
-"   ………../….//………… ….\\\\….\\\n" +
-"   …../´¯/…./´¯\\………../¯ `\\….\\¯`\\\n" +
-"   .././…/…./…./.|_……_| .\\….\\….\\…\\\n" +
-"   (.(….(….(…./.)..)..(..(. \\….)….)\n" +
-"   .\\…………….\\/…/….\\. ..\\/……………./\n" +
-"   ..\\…………….. /……..\\……………..…/\n" +
-"    ….\\…………..(…………)……………./\n" +
-"   ");
-        count++;
-        }
+    {
 
 
-       
+
+        // Test the comparison of points
+        PointQuadTree quadTree = new PointQuadTree(2); // 2-dimensional space
+        int[] point1 = { 3, 4 };
+        int[] point2 = { 2, 5 };
+
+        int index = quadTree.ComparePoints(point1, point2);
+        Console.WriteLine("Index: " + index);
+        //         int count = 1;
+        //         while (count <= 3)
+        //         {
+        //             TwoThreeFourTree<int> tree = new TwoThreeFourTree<int>();
+        //             tree.Insert(1);
+        //             tree.Insert(2);
+        //             tree.Insert(3);
+        //             tree.Print();
+        //             Console.WriteLine("Last Assignment Wooohooo!");
+        //             Console.WriteLine(".\n" +
+        // "   ……..…../´¯/)………… (\\¯`\\\n" +
+        // "   …………/….//……….. …\\\\….\\\n" +
+        // "   ………../….//………… ….\\\\….\\\n" +
+        // "   …../´¯/…./´¯\\………../¯ `\\….\\¯`\\\n" +
+        // "   .././…/…./…./.|_……_| .\\….\\….\\…\\\n" +
+        // "   (.(….(….(…./.)..)..(..(. \\….)….)\n" +
+        // "   .\\…………….\\/…/….\\. ..\\/……………./\n" +
+        // "   ..\\…………….. /……..\\……………..…/\n" +
+        // "    ….\\…………..(…………)……………./\n" +
+        // "   ");
+        //             count++;
+        //         }
+
+
+
     }
 
 

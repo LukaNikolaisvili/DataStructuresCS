@@ -135,54 +135,59 @@ public class LazyBinomialHeap<T>
 
 public class TwoThreeFourTree<T> where T : IComparable<T>
 {
-    private class Node
-    {
-        // Define Node structure for 2-3-4 Tree
-
-    }
-
-    public TwoThreeFourTree()
-    {
-        // Initialize TwoThreeFourTree
-    }
-
-    public bool Insert(T key)
-    {
-        // Insert method implementation
-        return false;
-    }
-
-    public bool Delete(T key)
-    {
-        // Delete method implementation
-        return false;
-    }
-
-    public bool Search(T key)
-    {
-        // Search method implementation
-        return false;
-    }
-
-    public BSTforRBTree<T> Convert()
-    {
-        // Convert to Red-Black Tree method implementation
-        return null;
-    }
-
-    public void Print()
-    {
-        // Print method implementation
-    }
-
-
-
-}
-
-public class BSTforRBTree<T> where T : IComparable<T>
-{
     // Define BSTforRBTree structure
 
+    public class BSTforRBTree<T>
+    {
+        private int n; // number of keys
+        private bool leaf; // true if a leaf node; false otherwise
+        private T[] key; // array of keys
+        private BSTforRBTree<T>[] c; // array of child references
+        public BSTforRBTree(int t)
+        {
+            n = 0;
+            leaf = true;
+            key = new T[2 * t - 1];
+            c = new BSTforRBTree<T>[2 * t];
+        }
+    }
+    // Initializes an empty 2-3-4 tree. (2 marks)
+    public TwoThreeFourTree()
+    {
+
+    }
+
+    // Returns true if key k is successfully inserted; false otherwise. (6 marks)
+    public bool Insert(T k)
+    {
+        return false;
+    }
+
+    // Returns true if key k is successfully deleted; false otherwise. (10 marks)
+    public bool Delete(T k)
+    {
+        return false;
+    }
+
+    // Returns true if key k is found; false otherwise (4 marks).
+    public bool Search(T k)
+    {
+        return false;
+    }
+
+    // Builds and returns the equivalent red-black tree. (8 marks).
+    public BSTforRBTree<T> Convert()
+    {
+        BSTforRBTree<T> test = new BSTforRBTree<T>(0);
+        
+        return test;
+    }
+
+    // Prints out the keys of the 2-3-4 tree in order. (4 marks)
+    public void Print()
+    {
+
+    }
 
 }
 

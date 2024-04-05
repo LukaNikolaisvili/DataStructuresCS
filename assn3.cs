@@ -160,7 +160,9 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
     // Initializes an empty 2-3-4 tree. (2 marks)
     public TwoThreeFourTree()
     {
-        root = null;
+        // Create a new node of size 0 and set that as the root.
+        Node<T> newNode = new Node<T>(0);
+        root = newNode ;
     }
 
     // Returns true if key k is successfully inserted; false otherwise. (6 marks)
@@ -178,50 +180,82 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
     // Returns true if key k is found; false otherwise (4 marks).
     public bool Search(T k)
     {
-        Node<T> p = root;
-        T[] keys = p.getKey();
-        Node<T>[] children;
-        int length = 0;
+        // Set the current node as the root node
+        Node<T> current = root;
+        // Array that will hold the children which will be updated as code progresses
+        Node<T>[] children; 
 
-        while (p != null) // Recursion without a recursive call
+        while (current != null) // Recursion without a recursive call
         {
+            // Get the array of keys from the current node
+            T[] keys = current.getKey();
+
+
+            // For every key in the array,
             foreach (T key in keys)
             {
+                // See if the key matches, if so return true!
                 if (key.Equals(k))
                 {
                     return true; // Key found
                 }
             }
 
-            if (p.checkLeaf() == true)
+            // By reaching this point it means the keys did not match
+            // Check if the current node is a leaf node, if so, return false.
+            if (current.checkLeaf() == true)
             {
                 return false;
             }
+            // If it's not a leaf node proceed to the correct child subtree!
             else
             {
-                // Here onwards is iffy and might be completely incorrect process wise, Instructions are as follows:
+                // Get the array of children
+                children = current.getChildren();
+                // Get the amount of children from the array
+                int length = children.Length;
 
-                /*  If the key k is not found and p is a leaf node then return false
-                    else move to the subtree which would otherwise contain k    */
-                // I do not fully know the logic to find the right subtree and dont want to use a for loop for each
-
-                children = p.getChildren();
-                length = children.Length;
-
-                // p = children[0]; // bogus line for now, change with proper index and method to find index
-
-                // // if () // some statement to find the right subtree index
-                // // {
-
-                // // }
-                // else // no correct subtree index. Exit
-                // {
-                //     return false;
-                // }
+                // Iterate through each key from left to right
+                for (int i = 0; i < length; i++)
+                {
+                    // If the key is bigger than k
+                    if (keys[i].CompareTo(k) > 0)
+                    {
+                        // Go to the child before the key
+                        current = children[i];
+                        // Break the loop and start over from the top!
+                        break;
+                    }
+                    // Otherwise if the key is less than k
+                    else if (keys[i].CompareTo(k) < 0)
+                    {
+                        // Check if the next key exists
+                        if (keys[i+1] != null)
+                        {
+                            // If it does check if the next key is greater than k
+                            // If it isn't, the loop will simply go to the next iteration
+                            // No additional code needed for that.
+                            if (keys[i+1].CompareTo(k) > 0)
+                            {
+                                // if it is move to the next child
+                                current = children[i+1];
+                                // break out of the loop and start from the top
+                                break;
+                            }
+                        }
+                        // If there is no next key, go to the rightmost child
+                        else
+                        {
+                            current = children[i+1];
+                            // break the loop and start from the top
+                            break;
+                        }
+                    }
+                }
             }
         }
 
-        // Key not found despite all of this
+        // Some error occurred in the logic
         // Return false
         return false;
     }

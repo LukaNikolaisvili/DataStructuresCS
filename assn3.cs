@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 // Part A: Point Quadtree
@@ -258,40 +258,86 @@ public class Program
 {
     public static void Main(string[] args)
     {
+
         // Quadtree
         PointQuadTree quadTree = new PointQuadTree(2); // 2-dimensional space
         int[] point1 = { 3, 4 };
         int[] point2 = { 2, 5 };
         int index = quadTree.ComparePoints(point1, point2);
-        Console.WriteLine("\nIndex: " + index);
 
-        Console.WriteLine("\nLazyBinomialHeap TESTING");
-        Console.WriteLine("\n-------------------------\n");
         // Testing LazyBinomialHeap
         LazyBinomialHeap<int> heap = new LazyBinomialHeap<int>();
-        heap.Add(1);
-        heap.Add(2);
-        heap.Add(3);
-        heap.Add(4);
-        heap.Add(5);
-        heap.Print();
-        Console.WriteLine("\n-------------------------\n");
-        Console.WriteLine("\nBST TESTING");
-        Console.WriteLine("\n-------------------------\n");
+
         BSTforRBTree<int> bst = new BSTforRBTree<int>();
         Color red = new Color();
         red = Color.RED;
         Color black = new Color();
         black = Color.BLACK;
+
+        Console.WriteLine("\nHello there!");
+        bool flag = false;
+
+        flag = true;
+        while (flag)
+        {
+
+            Console.WriteLine("\nChoose any of those operations: ");
+            Console.WriteLine("\n1 - print\n2 - blabla");
+            Console.WriteLine("-----------------");
+
+
+            Console.WriteLine("Enter the UID of the operation: ");
+
+            string op = Console.ReadLine();
+
+            if (op == "1")
+            {   
+                Console.WriteLine("// Quadtree");
+                Console.WriteLine("\nIndex: " + index);
+    
+            }
+
+            if (op == "2")
+            {
+                Console.WriteLine("\n-------------------------\n");
+                heap.Add(1);
+                heap.Add(2);
+                heap.Add(3);
+                heap.Add(4);
+                heap.Add(5);
+                heap.Print();
+                Console.WriteLine("\n-------------------------\n");
         
-        bst.Add(10,red);
-        bst.Add(20,black);
-        bst.Add(12,red);
-        bst.Add(25,black);
+            }
 
-        bst.Print();
-        Console.WriteLine("\n-------------------------");
 
+            if(op == "3")
+            {
+
+                bst.Add(10, red);
+                bst.Add(20, black);
+                bst.Add(12, red);
+                bst.Add(25, black);
+
+                bst.Print();
+                Console.WriteLine("\n-------------------------");
+
+            }
+
+              else if (op == "x")
+            {
+                Console.WriteLine("Exiting...");
+                flag = false;
+
+                if (flag == false)
+                {
+                    Console.WriteLine("program exited succesfully...");
+                }
+
+
+            }
+
+        }
 
     }
 }

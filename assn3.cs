@@ -1,4 +1,14 @@
-﻿using System;
+﻿/*
+
+COIS-3020 ASSIGNMENT 3
+CONTRIBUTORS:
+LUKA NIKOLAISVILI
+FARZAD IMRAN 
+FREDERICK NKWONTA
+DUE DATE: APR 7th 2024
+
+*/
+using System;
 using System.Collections.Generic;
 
 // Part A: Point Quadtree
@@ -114,41 +124,120 @@ public class LazyBinomialHeap<T> where T : IComparable<T>
 // Part C: 2-3-4 Trees to Red Black Trees
 public class TwoThreeFourTree<T> where T : IComparable<T>
 {
+    private Node<T> root;
+    private class Node<T>
+    {
+        private int n; // number of keys
+        private bool leaf; // true if a leaf node; false otherwise
+        private T[] key; // array of keys
+        private Node<T>[] c; // array of child references
+        public Node(int t)
+        {
+            n = 0;
+            leaf = true;
+            key = new T[2 * t - 1];
+            c = new Node<T>[2 * t];
+        }
+        //Public getter method for the key array
+        public T[] getKey()
+        {
+            return key;
+        }
+
+        // Public method to check if the value is a leaf node
+        public bool checkLeaf()
+        {
+            return leaf;
+        }
+
+        // Public method to get child node references
+        public Node<T>[] getChildren()
+        {
+            return c;
+        }
+
+    }
+    // Initializes an empty 2-3-4 tree. (2 marks)
     public TwoThreeFourTree()
     {
-        // Constructor implementation
+        root = null;
     }
 
+    // Returns true if key k is successfully inserted; false otherwise. (6 marks)
     public bool Insert(T k)
     {
-        // Implement the Insert method
         return false;
     }
 
-    public bool Delete(T item)
+    // Returns true if key k is successfully deleted; false otherwise. (10 marks)
+    public bool Delete(T k)
     {
-        // Implement the Delete method
         return false;
     }
 
-    public bool Search(T item)
+    // Returns true if key k is found; false otherwise (4 marks).
+    public bool Search(T k)
     {
-        // Implement the Search method
+        Node<T> p = root;
+        T[] keys = p.getKey();
+        Node<T>[] children;
+        int length = 0;
+
+        while (p != null) // Recursion without a recursive call
+        {
+            foreach (T key in keys)
+            {
+                if (key.Equals(k))
+                {
+                    return true; // Key found
+                }
+            }
+
+            if (p.checkLeaf() == true)
+            {
+                return false;
+            }
+            else
+            {
+                // Here onwards is iffy and might be completely incorrect process wise, Instructions are as follows:
+
+                /*  If the key k is not found and p is a leaf node then return false
+                    else move to the subtree which would otherwise contain k    */
+                // I do not fully know the logic to find the right subtree and dont want to use a for loop for each
+
+                children = p.getChildren();
+                length = children.Length;
+
+                p = children[0]; // bogus line for now, change with proper index and method to find index
+
+                if () // some statement to find the right subtree index
+                {
+
+                }
+                else // no correct subtree index. Exit
+                {
+                    return false;
+                }
+            }
+        }
+
+        // Key not found despite all of this
+        // Return false
         return false;
     }
 
-    //we have to check this!!!
-
-    public BSTforRBTree<int> Convert()
+    // Builds and returns the equivalent red-black tree. (8 marks).
+    public BSTforRBTree<T> Convert()
     {
-        // Implement the Convert method
-        return new BSTforRBTree<int>();
+        // To do, use the BSTforRBTree file provided (Patrick said so)
     }
 
+    // Prints out the keys of the 2-3-4 tree in order. (4 marks)
     public void Print()
     {
-        // Implement the Print method
+
     }
+
 }
 
 public enum Color { RED, BLACK }; // Colors of the red-black tree

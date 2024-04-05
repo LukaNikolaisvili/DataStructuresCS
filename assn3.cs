@@ -1,5 +1,4 @@
 ﻿/*
-
 COIS-3020 ASSIGNMENT 3
 CONTRIBUTORS:
 LUKA NIKOLAISVILI
@@ -90,7 +89,20 @@ public class LazyBinomialHeap<T> where T : IComparable<T>
         {
             throw new InvalidOperationException("Heap is empty");
         }
-        return minNode.Key;
+
+        BinomialNode highest = null;
+
+        foreach (var nodeList in roots.Values)
+        {
+            foreach (var node in nodeList)
+            {
+                if (highest == null || node.Key.CompareTo(highest.Key) > 0)
+                {
+                    highest = node;
+                }
+            }
+        }
+        return highest.Key;
     }
 
     public void Remove()
@@ -162,7 +174,7 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
     {
         // Create a new node of size 0 and set that as the root.
         Node<T> newNode = new Node<T>(0);
-        root = newNode ;
+        root = newNode;
     }
 
     // Returns true if key k is successfully inserted; false otherwise. (6 marks)
@@ -183,7 +195,7 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
         // Set the current node as the root node
         Node<T> current = root;
         // Array that will hold the children which will be updated as code progresses
-        Node<T>[] children; 
+        Node<T>[] children;
 
         while (current != null) // Recursion without a recursive call
         {
@@ -230,15 +242,15 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
                     else if (keys[i].CompareTo(k) < 0)
                     {
                         // Check if the next key exists
-                        if (keys[i+1] != null)
+                        if (keys[i + 1] != null)
                         {
                             // If it does check if the next key is greater than k
                             // If it isn't, the loop will simply go to the next iteration
                             // No additional code needed for that.
-                            if (keys[i+1].CompareTo(k) > 0)
+                            if (keys[i + 1].CompareTo(k) > 0)
                             {
                                 // if it is move to the next child
-                                current = children[i+1];
+                                current = children[i + 1];
                                 // break out of the loop and start from the top
                                 break;
                             }
@@ -246,7 +258,7 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
                         // If there is no next key, go to the rightmost child
                         else
                         {
-                            current = children[i+1];
+                            current = children[i + 1];
                             // break the loop and start from the top
                             break;
                         }

@@ -24,14 +24,14 @@ public class PointQuadTree
     public int ComparePoints(int[] point1, int[] point2)
     {
         int index = 0;
-        
+
         for (int i = 0; i < point1.Length; i++)
         {
             index <<= 1;
-           if (point1[i] >= point2[i])
-        {
-            index |= 1; // Set the last bit to 1 if point1's coordinate is greater than or equal to point2's
-        }
+            if (point1[i] >= point2[i])
+            {
+                index |= 1; // Set the last bit to 1 if point1's coordinate is greater than or equal to point2's
+            }
 
         }
         return index;
@@ -208,16 +208,16 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
                 children = p.getChildren();
                 length = children.Length;
 
-                p = children[0]; // bogus line for now, change with proper index and method to find index
+                // p = children[0]; // bogus line for now, change with proper index and method to find index
 
-                if () // some statement to find the right subtree index
-                {
+                // // if () // some statement to find the right subtree index
+                // // {
 
-                }
-                else // no correct subtree index. Exit
-                {
-                    return false;
-                }
+                // // }
+                // else // no correct subtree index. Exit
+                // {
+                //     return false;
+                // }
             }
         }
 
@@ -227,10 +227,10 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
     }
 
     // Builds and returns the equivalent red-black tree. (8 marks).
-    public BSTforRBTree<T> Convert()
-    {
-        // To do, use the BSTforRBTree file provided (Patrick said so)
-    }
+    // public BSTforRBTree<int> Convert()
+    // {   
+    //     // To do, use the BSTforRBTree file provided (Patrick said so)
+    // }
 
     // Prints out the keys of the 2-3-4 tree in order. (4 marks)
     public void Print()
@@ -359,7 +359,7 @@ public class Program
         int[] point1 = { 1, 0 }; // 10 is 2 in binary       00 - 0, 01 - 1, 10 - 2, 11 - 3,
         int[] point2 = { 1, 1 }; //11 is 3 in binary
         int index = quadTree.ComparePoints(point1, point2);
-        int index2 = quadTree.ComparePoints(point2,point1);
+        int index2 = quadTree.ComparePoints(point2, point1);
 
         // Testing LazyBinomialHeap
         LazyBinomialHeap<int> heap = new LazyBinomialHeap<int>();
@@ -387,10 +387,10 @@ public class Program
             string op = Console.ReadLine();
 
             if (op == "1")
-            {   
+            {
                 Console.WriteLine("// Quadtree");
                 Console.WriteLine("\nIndex 1 : " + index + "\nIndex 2 : " + index2);
-    
+
             }
 
             if (op == "2")
@@ -403,11 +403,11 @@ public class Program
                 heap.Add(5);
                 heap.Print();
                 Console.WriteLine("\n-------------------------\n");
-        
+
             }
 
 
-            if(op == "3")
+            if (op == "3")
             {
 
                 bst.Add(10, red);
@@ -420,7 +420,7 @@ public class Program
 
             }
 
-              else if (op == "x")
+            else if (op == "x")
             {
                 Console.WriteLine("Exiting...");
                 flag = false;

@@ -1,5 +1,4 @@
 ﻿/*
-
 COIS-3020 ASSIGNMENT 3
 CONTRIBUTORS:
 LUKA NIKOLAISVILI
@@ -47,7 +46,7 @@ public class PointQuadTree
 public class LazyBinomialHeap<T> where T : IComparable<T>
 {
     private Dictionary<int, List<BinomialNode>> roots;
-    private BinomialNode minNode;
+    private BinomialNode maxNode;
 
     private class BinomialNode
     {
@@ -66,7 +65,7 @@ public class LazyBinomialHeap<T> where T : IComparable<T>
     public LazyBinomialHeap()
     {
         roots = new Dictionary<int, List<BinomialNode>>();
-        minNode = null;
+        maxNode = null;
     }
 
     public void Add(T item)
@@ -78,24 +77,78 @@ public class LazyBinomialHeap<T> where T : IComparable<T>
         }
         roots[0].Add(newNode);
 
-        if (minNode == null || item.CompareTo(minNode.Key) < 0)
+        if (maxNode == null || item.CompareTo(maxNode.Key) > 0)
         {
-            minNode = newNode;
+            maxNode = newNode;
         }
     }
 
     public T Front()
     {
-        if (minNode == null)
+        if (maxNode == null)
         {
             throw new InvalidOperationException("Heap is empty");
         }
-        return minNode.Key;
+
+        return maxNode.Key;
     }
 
     public void Remove()
     {
-        // Implement the Remove method
+        if (maxNode == null)
+        {
+            throw new InvalidOperationException("Heap is empty");
+        }
+
+        Coalesce();
+    }
+
+    private void Coalesce()
+    {
+        if (maxNode == null)
+        {
+            throw new InvalidOperationException("Heap is empty");
+        }
+
+        // Remove the tree containing the maxNode from the root list
+        List<BinomialNode> rootList = roots[maxNode.Order];
+        rootList.Remove(maxNode);
+
+        // Insert the children of the removed tree into a new binomial heap H
+        LazyBinomialHeap<T> H = new LazyBinomialHeap<T>();
+        foreach (var child in maxNode.Children)
+        {
+            H.roots[child.Order] = new List<BinomialNode> { child };
+        }
+
+        // Merge H with the current binomial heap
+        foreach (var kvp in H.roots)
+        {
+            int order = kvp.Key;
+            List<BinomialNode> nodeList = kvp.Value;
+
+            if (!roots.ContainsKey(order))
+            {
+                roots[order] = nodeList;
+            }
+            else
+            {
+                roots[order].AddRange(nodeList);
+            }
+        }
+
+        // Update maxNode if necessary
+        maxNode = null;
+        foreach (var nodeList in roots.Values)
+        {
+            foreach (var node in nodeList)
+            {
+                if (maxNode == null || node.Key.CompareTo(maxNode.Key) > 0)
+                {
+                    maxNode = node;
+                }
+            }
+        }
     }
 
     public void Print()
@@ -120,6 +173,7 @@ public class LazyBinomialHeap<T> where T : IComparable<T>
         }
     }
 }
+
 
 // Part C: 2-3-4 Trees to Red Black Trees
 public class TwoThreeFourTree<T> where T : IComparable<T>

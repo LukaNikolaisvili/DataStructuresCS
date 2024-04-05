@@ -138,10 +138,55 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
             key = new T[2 * t - 1];
             c = new Node<T>[2 * t];
         }
-        //Public getter method for the key array
+        // Public getter method for the key array
         public T[] getKey()
         {
             return key;
+        }
+
+        // Public add method for the key array
+        public void addKey(int index, T value)
+        {
+            // Error statement if index is out of bounds
+            if (index > 2 || index < 0)
+            {
+                throw new IndexOutOfRangeException("Index is out of bounds.");
+            }
+            // if the key at the current index slot is full, shift to the right
+            if (key[index] != null)
+            {
+                // Shift each key right until index
+                for (int i = 2; i > index; i--)
+                {
+                    key[i] = key[i - 1];
+                }
+            }
+            // Now insert the value at the index
+            key[index] = value;
+            return;
+        }
+        // Public remove method for the key array
+        public void removeKey(int index)
+        {
+            // Error if index is out of bounds
+            if (index > 2 || index < 0)
+            {
+                throw new IndexOutOfRangeException("Index is out of bounds.");
+            }
+            else
+            {
+                // For every key starting from the index, 
+                // shift neighbouring key to the left
+                for (int i = index; i < 2; i++)
+                {
+                    key[i] = key[i + 1];
+                }
+                // Set the last element to default value
+                key[2] = default;
+            }
+
+            return;
+
         }
 
         // Public method to check if the value is a leaf node
@@ -156,18 +201,220 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
             return c;
         }
 
+        // Public method to add a child to the array
+        public void addChild(int index, Node<T> child)
+        {
+            // Error statement if index is out of bounds
+            if (index > 3 || index < 0)
+            {
+                throw new IndexOutOfRangeException("Index is out of bounds.");
+            }
+            // if the child at the current index slot is full, shift to the right
+            if (c[index] != null)
+            {
+                // Shift each child right until index
+                for (int i = 3; i > index; i--)
+                {
+                    c[i] = c[i - 1];
+                }
+            }
+            // Now insert the value at the index
+            c[index] = child;
+            return;
+        }
+
+        // Public method to remove a child from the array
+        public void removeChild(int index)
+        {
+            // Error if index is out of bounds
+            if (index > 3 || index < 0)
+            {
+                throw new IndexOutOfRangeException("Index is out of bounds.");
+            }
+            else
+            {
+                // For every key starting from the index, 
+                // shift neighbouring key to the left
+                for (int i = index; i < 3; i++)
+                {
+                    c[i] = c[i + 1];
+                }
+                // Set the last element to default value
+                c[3] = null;
+            }
+
+            return;
+
+        }
+
     }
+
+    // Private method for split
+    private void Split(Node<T> x, int i)
+    {
+
+        // Create a new node to hold the other keys
+        Node<T> q = new Node<T>(2);
+        // Array to hold the children of node x
+        Node<T>[] children = x.getChildren();
+
+        Node<T> p = children[i];    // Set p as the child at index i
+        T[] keys = p.getKey();      // Get the keys of the child node p
+        T value = keys[2];          // Get the last key from the array
+
+        // Move the last key of p into q
+        q.addKey(0, value);
+        // Remove the last key of p
+        p.removeKey(2);
+
+        // If p is not a leaf node, continue with split
+        if (!p.checkLeaf())
+        {
+            // If p isn't a leaf node, copy the last half of its children to q.
+            for (int j = 2; j < 4; j++)
+            {
+                q.addChild(j, children[j]);
+                p.removeChild(j);
+            }
+        }
+
+        // Insert the middle key from p to x at position i
+        x.addKey(i, keys[1]);
+        p.removeKey(1);
+
+        // Add reference to node q as the child at i+1 (to the right of p)
+        x.addChild(i + 1, q);
+
+    }
+
+
     // Initializes an empty 2-3-4 tree. (2 marks)
     public TwoThreeFourTree()
     {
-        // Create a new node of size 0 and set that as the root.
-        Node<T> newNode = new Node<T>(0);
-        root = newNode ;
+        // Create a new node of size 2 (For the 2-3-4 tree) and set that as the root.
+        Node<T> newNode = new Node<T>(2);
+        root = newNode;
     }
 
     // Returns true if key k is successfully inserted; false otherwise. (6 marks)
     public bool Insert(T k)
     {
+        // Set the current node as the root node
+        Node<T> p = root;
+        int max = 3; // maximum number of keys something can hold (2t-1, where t is always 2)
+        // Array that will hold the keys which will be updated as code progresses
+        T[] keys = p.getKey();
+        // Array that will hold the children which will be updated as code progresses
+        Node<T>[] children;
+
+        // If the current root node is full, split and make a new one!
+        if (keys.Length >= max)
+        {
+            // Root is full, make a new root and then split.
+            root = new Node<T>(2);
+
+            // Set the first child of the new root to p (the old root)
+            root.addChild(0, p);
+
+            // Now split the root using the first child (full)
+            Split(root, 0);
+
+            p = root;
+        }
+
+        // Continue with the rest of insert
+        while (p != null) // Recursion without a recursive call
+        {
+            // Get the array of keys from the current node
+            keys = p.getKey();
+
+            // Check if the current node is a leaf node
+            // Insert here!
+            if (p.checkLeaf() == true)
+            {
+                // interger to count the number of children, starts at -1.
+                int index = -1;
+                // Check if the key already exists or not
+                foreach (T key in keys)
+                {
+                    index++; // increase the number of keys
+                    // See if the key matches, if so stop the insertion
+                    if (key.Equals(k))
+                    {
+                        Console.WriteLine("Key already exists. Insertion cancelled");
+                        return false;
+                    }
+                }
+
+                // Add the key to the next slot and return true.
+                p.addKey(index + 1, k);
+                return true;
+            }
+            // If it's not a leaf node proceed to the correct child subtree!
+            else
+            {
+                // Update the array of children
+                children = p.getChildren();
+                // Get the amount of children from the array
+                int length = children.Length;
+
+                // Iterate through each key from left to right
+                for (int i = 0; i < length; i++)
+                {
+                    // If the key is bigger than k
+                    if (keys[i].CompareTo(k) > 0)
+                    {
+                        // If child is full, split
+                        if (keys.Length >= max)
+                        {
+                            Split(children[i], i);
+                        }
+                        // Proceed to the child
+                        p = children[i];
+                        // Break the loop and start over from the top!
+                        break;
+                    }
+                    // Otherwise if the key is less than k
+                    else if (keys[i].CompareTo(k) < 0)
+                    {
+                        // Check if the next key exists
+                        if (keys[i + 1] != null)
+                        {
+                            // If it does check if the next key is greater than k
+                            // If it isn't, the loop will simply go to the next iteration
+                            // No additional code needed for that.
+                            if (keys[i + 1].CompareTo(k) > 0)
+                            {
+
+                                // If child is full, split
+                                if (keys.Length >= max)
+                                {
+                                    Split(children[i + 1], i + 1);
+                                }
+                                // Then move to the next child
+                                p = children[i + 1];
+                                // break out of the loop and start from the top
+                                break;
+                            }
+                        }
+                        // If there is no next key, go to the rightmost child
+                        else
+                        {
+                            // If child is full, split
+                            if (keys.Length >= max)
+                            {
+                                Split(children[i + 1], i + 1);
+                            }
+                            // Then move to the rightmost child
+                            p = children[i + 1];
+                            // break the loop and start from the top
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        // No insertion, return false
         return false;
     }
 
@@ -183,7 +430,7 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
         // Set the current node as the root node
         Node<T> current = root;
         // Array that will hold the children which will be updated as code progresses
-        Node<T>[] children; 
+        Node<T>[] children;
 
         while (current != null) // Recursion without a recursive call
         {
@@ -230,15 +477,15 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
                     else if (keys[i].CompareTo(k) < 0)
                     {
                         // Check if the next key exists
-                        if (keys[i+1] != null)
+                        if (keys[i + 1] != null)
                         {
                             // If it does check if the next key is greater than k
                             // If it isn't, the loop will simply go to the next iteration
                             // No additional code needed for that.
-                            if (keys[i+1].CompareTo(k) > 0)
+                            if (keys[i + 1].CompareTo(k) > 0)
                             {
                                 // if it is move to the next child
-                                current = children[i+1];
+                                current = children[i + 1];
                                 // break out of the loop and start from the top
                                 break;
                             }
@@ -246,7 +493,7 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
                         // If there is no next key, go to the rightmost child
                         else
                         {
-                            current = children[i+1];
+                            current = children[i + 1];
                             // break the loop and start from the top
                             break;
                         }

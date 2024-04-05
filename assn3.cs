@@ -14,9 +14,15 @@ public class PointQuadTree
     public int ComparePoints(int[] point1, int[] point2)
     {
         int index = 0;
+        
         for (int i = 0; i < point1.Length; i++)
         {
-            index = point1[i] < point2[i] ? 2 * index + 1 : 2 * index + 2;
+            index <<= 1;
+           if (point1[i] >= point2[i])
+        {
+            index |= 1; // Set the last bit to 1 if point1's coordinate is greater than or equal to point2's
+        }
+
         }
         return index;
     }
@@ -119,13 +125,13 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
         return false;
     }
 
-    public bool Delete(T k)
+    public bool Delete(T item)
     {
         // Implement the Delete method
         return false;
     }
 
-    public bool Search(T k)
+    public bool Search(T item)
     {
         // Implement the Search method
         return false;
@@ -133,11 +139,11 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
 
     //we have to check this!!!
 
-    // public BSTforRBTree<int> Convert()
-    // {
-    //     // Implement the Convert method
-    //     return new BSTforRBTree<int>();
-    // }
+    public BSTforRBTree<int> Convert()
+    {
+        // Implement the Convert method
+        return new BSTforRBTree<int>();
+    }
 
     public void Print()
     {
@@ -261,9 +267,10 @@ public class Program
 
         // Quadtree
         PointQuadTree quadTree = new PointQuadTree(2); // 2-dimensional space
-        int[] point1 = { 3, 4 };
-        int[] point2 = { 2, 5 };
+        int[] point1 = { 1, 0 }; // 10 is 2 in binary       00 - 0, 01 - 1, 10 - 2, 11 - 3,
+        int[] point2 = { 1, 1 }; //11 is 3 in binary
         int index = quadTree.ComparePoints(point1, point2);
+        int index2 = quadTree.ComparePoints(point2,point1);
 
         // Testing LazyBinomialHeap
         LazyBinomialHeap<int> heap = new LazyBinomialHeap<int>();
@@ -293,7 +300,7 @@ public class Program
             if (op == "1")
             {   
                 Console.WriteLine("// Quadtree");
-                Console.WriteLine("\nIndex: " + index);
+                Console.WriteLine("\nIndex 1 : " + index + "\nIndex 2 : " + index2);
     
             }
 

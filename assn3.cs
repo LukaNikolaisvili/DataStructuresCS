@@ -221,13 +221,42 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
             return key;
         }
 
+        public int getKeyNum()
+        {
+            return n;
+        }
+        public void updateKeyNum(int check)
+        {
+            // if the passed value is 0, increment number of keys
+            if (check == 0)
+            {
+                n++;
+            }
+            // if the passed value is 1, decrement number of keys
+            else if (check == 1)
+            {
+                n--;
+            }
+            
+            // if the number of keys is less than 0, set it to 0.
+            if (n < 0)
+            {
+                n = 0;
+            }
+
+        }
+
         // Public add method for the key array
         public void addKey(int index, U value)
         {
             // Error statement if index is out of bounds
-            if (index >= key.Length)
+            if (index >= 3 || index < 0)
             {
-                throw new IndexOutOfRangeException("you can not add more its full");
+                throw new IndexOutOfRangeException("index out of bounds");
+            }
+            if (n >= 3)
+            {
+                throw new IndexOutOfRangeException("Cannot insert, the node is full");
             }
             // if the key at the current index slot is full, shift to the right
             if (key[index] != null)
@@ -240,6 +269,8 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
             }
             // Now insert the value at the index
             key[index] = value;
+            // increment number of keys
+            updateKeyNum(0);
             return;
         }
         // Public remove method for the key array
@@ -260,8 +291,9 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
                 }
                 // Set the last element to default value
                 key[2] = default;
+                // Decrement number of keys
+                updateKeyNum(1);
             }
-
             return;
 
         }
@@ -379,12 +411,12 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
         // Set the current node as the root node
         Node<T> p = root;
         // Node to hold reference to parent node
-        Node<T> parent = null;
+        Node<T> parent = p;
         int max = 3; // maximum number of keys something can hold (2t-1, where t is always 2)
         // Array that will hold the keys which will be updated as code progresses
         T[] keys = p.getKey();
         // This will hold the number of items in the keys array and update as code progresses
-        int index = keys.Length; 
+        int index = p.getKeyNum(); 
         // Array that will hold the children which will be updated as code progresses
         Node<T>[] children;
 
@@ -414,7 +446,7 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
             keys = p.getKey();
             
             // update index based on new keys array
-            index = keys.Length;
+            index = p.getKeyNum();
 
             // Check if the current node is a leaf node
             // Insert here!
@@ -440,7 +472,7 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
                 // update the number of keys in the current node
                 keys = p.getKey();
                 // update the insertion index 
-                index = keys.Length;
+                index = p.getKeyNum();
                 // Add the key to the next slot (index) and return true.
                 p.addKey(index, k);
                 return true;
@@ -558,13 +590,13 @@ private bool Delete(Node<T> node, T k)
     //for the loop I will initialize it outside I will need this in other parts as well
     int i = 0;
     //while loop will go through the conditions and check if the index is less then size of the keys, and we will check if any of them are not null 
-    while (i < keys.Length && keys[i] != null && keys[i].CompareTo(k) < 0)
+    while (i < node.getKeyNum() && keys[i] != null && keys[i].CompareTo(k) < 0)
     {   //then we will increment
         i++;
     }
 
     // If the key is found in the current node
-    if (i < keys.Length && keys[i] != null && keys[i].CompareTo(k) == 0)
+    if (i < node.getKeyNum() && keys[i] != null && keys[i].CompareTo(k) == 0)
     {
         // If the node is a leaf, simply remove the key
         if (node.checkLeaf())
@@ -610,7 +642,7 @@ private T FindMax(Node<T> node)
     //we will populate keys with the getkey method 
     T[] keys = node.getKey();
     //starting fomr the end
-    int i = keys.Length - 1;
+    int i = node.getKeyNum() - 1;
     //checking if the i > 0 and the i is null
     while (i >= 0 && keys[i] == null)
     {
@@ -763,7 +795,7 @@ public BSTforRBTree<T> Convert()
         //getchildren, method, and populating it in the children node
         Node<T>[] children = node.getChildren();
         //for loop going from 0 to the last index and incrementing
-        for (int i = 0; i < keys.Length; i++)
+        for (int i = 0; i < node.getKeyNum(); i++)
         {
             // Recursively print the left child
             if (i < children.Length && children[i] != null)
@@ -775,12 +807,12 @@ public BSTforRBTree<T> Convert()
             if (keys[i] != null)
             {   
                 //using the write I will print all the keys in order
-                Console.Write(keys[i] + " ");
+                Console.Write(keys[i] + "\n");
             }
         }
 
         // Recursively print the rightmost child
-        if (children.Length > keys.Length)
+        if (children.Length > node.getKeyNum())
         {   
             //printing the rightmost child
             PrintInOrder(children[children.Length - 1]);
@@ -979,7 +1011,12 @@ public class Program
                 Console.WriteLine();
                 Console.WriteLine();
                 Console.WriteLine(tt4t.Insert(5) + "\n");
-                Console.WriteLine(tt4t.Delete(0) + "\n");
+                Console.WriteLine(tt4t.Insert(5) + "\n");
+                Console.WriteLine(tt4t.Insert(4) + "\n");
+                Console.WriteLine(tt4t.Insert(5) + "\n");
+                tt4t.Print();
+                Console.WriteLine(tt4t.Delete(5) + "\n");
+                tt4t.Print();
                 TwoThreeFourTree<int> twoThreeFourTree = new TwoThreeFourTree<int>();
                 //converting 2-3-4 tree to a red-black tree
                 BSTforRBTree<int> redBlackTree = twoThreeFourTree.Convert();

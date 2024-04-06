@@ -218,9 +218,9 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
         public void addKey(int index, T value)
         {
             // Error statement if index is out of bounds
-            if (index > 2 || index < 0)
+            if (index >= key.Length)
             {
-                throw new IndexOutOfRangeException("Index is out of bounds.");
+                throw new IndexOutOfRangeException("you can not add more its full");
             }
             // if the key at the current index slot is full, shift to the right
             if (key[index] != null)
@@ -586,8 +586,42 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
     // Prints out the keys of the 2-3-4 tree in order. (4 marks)
     public void Print()
     {
-
+        PrintInOrder(root);
     }
+
+
+    private void PrintInOrder(Node<T> node)
+    {
+        if (node == null)
+        {
+            return;
+        }
+
+        T[] keys = node.getKey();
+        Node<T>[] children = node.getChildren();
+
+        for (int i = 0; i < keys.Length; i++)
+        {
+            // Recursively print the left child
+            if (i < children.Length && children[i] != null)
+            {
+                PrintInOrder(children[i]);
+            }
+
+            // Print the key
+            if (keys[i] != null)
+            {
+                Console.Write(keys[i] + " ");
+            }
+        }
+
+        // Recursively print the rightmost child
+        if (children.Length > keys.Length)
+        {
+            PrintInOrder(children[children.Length - 1]);
+        }
+    }
+
 
 }
 
@@ -716,6 +750,10 @@ public class Program
         LazyBinomialHeap<int> heap = new LazyBinomialHeap<int>();
 
         BSTforRBTree<int> bst = new BSTforRBTree<int>();
+
+        TwoThreeFourTree<int> tt4t = new TwoThreeFourTree<int>();
+    
+
         Color red = new Color();
         red = Color.RED;
         Color black = new Color();
@@ -729,7 +767,7 @@ public class Program
         {
 
             Console.WriteLine("\nChoose any of those operations: ");
-            Console.WriteLine("\n1 - print\n2 - blabla");
+            Console.WriteLine("\n1 - print\n2 - blabla \n3 - RB tree print\n4 - twoThreeForTreePrint");
             Console.WriteLine("-----------------");
 
 
@@ -768,6 +806,12 @@ public class Program
 
                 bst.Print();
                 Console.WriteLine("\n-------------------------");
+
+            }
+
+            if(op == "4"){
+                
+                tt4t.Print();
 
             }
 

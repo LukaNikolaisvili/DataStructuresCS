@@ -413,8 +413,6 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
         // Node to hold reference to parent node
         Node<T> parent = p;
         int max = 3; // maximum number of keys something can hold (2t-1, where t is always 2)
-        // Array that will hold the keys which will be updated as code progresses
-        T[] keys = p.getKey();
         // This will hold the number of items in the keys array and update as code progresses
         int index = p.getKeyNum(); 
         // Array that will hold the children which will be updated as code progresses
@@ -443,7 +441,8 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
         while (p != null) // Recursion without a recursive call
         {
             // Get the array of keys from the current node
-            keys = p.getKey();
+            // Array that will hold the keys which will be updated as code progresses
+            T[] keys = p.getKey();
             
             // update index based on new keys array
             index = p.getKeyNum();
@@ -469,12 +468,45 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
                     // split the node
                     Split(parent, childindex);
                 }
-                // update the number of keys in the current node
-                keys = p.getKey();
                 // update the insertion index 
                 index = p.getKeyNum();
-                // Add the key to the next slot (index) and return true.
-                p.addKey(index, k);
+                keys = p.getKey();
+                int insertindex = 0;
+                for(int j = 0; j < index; j++)
+                {
+                    // if k is less than key at index j
+                    if (keys[j].CompareTo(k) > 0)
+                    {
+                        // insert at index j and exit out of the loop
+                        insertindex = j;
+                        break;
+                    }
+                    // Otherwise if the key is smaller than k
+                    else if (keys[j].CompareTo(k) < 0)
+                    {
+                        // if the current key is at index 0, check for neighbour
+                        // if you are index 1, you cannot have a neighbour or the node is full
+                        if (j + 1 == 1)
+                        {
+                            // make sure k is less than the neighbouring key
+                            if (keys[j + 1].CompareTo(k) > 0)
+                            {
+                                // if so insert at j+1
+                                insertindex = j + 1;
+                                break;
+                            }
+                            // Otherwise loop will continue to next iteration
+                        }
+                        else 
+                        {
+                            // Insert at the next index if no neighbour
+                            insertindex = j + 1;
+                            break;
+                        }
+                    }
+                }
+                // Add the key to the correct slot and return true.
+                p.addKey(insertindex, k);
                 return true;
             }
             // If it's not a leaf node proceed to the correct child subtree!

@@ -378,24 +378,32 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
     {
         // Set the current node as the root node
         Node<T> p = root;
+        // Node to hold reference to parent node
+        Node<T> parent = null;
         int max = 3; // maximum number of keys something can hold (2t-1, where t is always 2)
         // Array that will hold the keys which will be updated as code progresses
         T[] keys = p.getKey();
+        // This will hold the number of items in the keys array and update as code progresses
+        int index = keys.Length; 
         // Array that will hold the children which will be updated as code progresses
         Node<T>[] children;
 
+        // This number will hold the index of the child we went down!
+        int childindex = 0;
+
         // If the current root node is full, split and make a new one!
-        if (keys.Length >= max)
+        if (index >= max)
         {
             // Root is full, make a new root and then split.
             root = new Node<T>(2);
 
             // Set the first child of the new root to p (the old root)
-            root.addChild(0, p);
+            root.addChild(childindex, p);
 
-            // Now split the root using the first child (full)
-            Split(root, 0);
+            // Now split the first child (full) of the new root
+            Split(root, childindex);
 
+            // Set current node as the new root for proper traversal
             p = root;
         }
 
@@ -404,27 +412,37 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
         {
             // Get the array of keys from the current node
             keys = p.getKey();
+            
+            // update index based on new keys array
+            index = keys.Length;
 
             // Check if the current node is a leaf node
             // Insert here!
             if (p.checkLeaf() == true)
             {
-                // interger to count the number of children, starts at -1.
-                int index = -1;
                 // Check if the key already exists or not
-                foreach (T key in keys)
+                for(int j = 0; j < index; j++)
                 {
-                    index++; // increase the number of keys
                     // See if the key matches, if so stop the insertion
-                    if (key.Equals(k))
+                    if (keys[j].Equals(k))
                     {
                         Console.WriteLine("Key already exists. Insertion cancelled");
                         return false;
                     }
                 }
 
-                // Add the key to the next slot and return true.
-                p.addKey(index + 1, k);
+                // If for some reason we ended up in a leaf node with maximum keys
+                if (index >= max)
+                {
+                    // split the node
+                    Split(parent, childindex);
+                }
+                // update the number of keys in the current node
+                keys = p.getKey();
+                // update the insertion index 
+                index = keys.Length;
+                // Add the key to the next slot (index) and return true.
+                p.addKey(index, k);
                 return true;
             }
             // If it's not a leaf node proceed to the correct child subtree!
@@ -441,13 +459,17 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
                     // If the key is bigger than k
                     if (keys[i].CompareTo(k) > 0)
                     {
+                        // Set child index to the current key index (The child left of the key!)
+                        childindex = i;
                         // If child is full, split
-                        if (keys.Length >= max)
+                        if (index >= max)
                         {
-                            Split(children[i], i);
+                            Split(p, childindex);
                         }
+                        // Set parent as the current node
+                        parent = p;
                         // Proceed to the child
-                        p = children[i];
+                        p = children[childindex];
                         // Break the loop and start over from the top!
                         break;
                     }
@@ -460,16 +482,19 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
                             // If it does check if the next key is greater than k
                             // If it isn't, the loop will simply go to the next iteration
                             // No additional code needed for that.
-                            if (keys[i + 1].CompareTo(k) > 0)
+                            if (keys[i+1].CompareTo(k) > 0)
                             {
-
+                                // Set child index to i+1 (the child right of the current key!)
+                                childindex = i + 1;
                                 // If child is full, split
-                                if (keys.Length >= max)
+                                if (index >= max)
                                 {
-                                    Split(children[i + 1], i + 1);
+                                    Split(p, childindex);
                                 }
+                                // Set parent as the current node
+                                parent = p;
                                 // Then move to the next child
-                                p = children[i + 1];
+                                p = children[childindex];
                                 // break out of the loop and start from the top
                                 break;
                             }
@@ -477,13 +502,17 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
                         // If there is no next key, go to the rightmost child
                         else
                         {
+                            // Set child index to i+1 (the child right of the current key!)
+                            childindex = i + 1;
                             // If child is full, split
-                            if (keys.Length >= max)
+                            if (index >= max)
                             {
-                                Split(children[i + 1], i + 1);
+                                Split(p, childindex);
                             }
-                            // Then move to the rightmost child
-                            p = children[i + 1];
+                            // Set the parent node as the current node
+                            parent = p;
+                            // Then set the current node as the rightmost child
+                            p = children[childindex];
                             // break the loop and start from the top
                             break;
                         }
@@ -901,7 +930,7 @@ public class Program
         {
 
             Console.WriteLine("\nChoose any of those operations: ");
-            Console.WriteLine("\n1 - print\n2 - blabla \n3 - RB tree print\n4 - twoThreeForTreePrint");
+            Console.WriteLine("\n1 - Print\n2 - blabla \n3 - RB tree print\n4 - TwoThreeFourTreePrint");
             Console.WriteLine("-----------------");
 
 
@@ -949,6 +978,7 @@ public class Program
                 tt4t.Print();
                 Console.WriteLine();
                 Console.WriteLine();
+                Console.WriteLine(tt4t.Insert(5) + "\n");
                 Console.WriteLine(tt4t.Delete(0) + "\n");
                 TwoThreeFourTree<int> twoThreeFourTree = new TwoThreeFourTree<int>();
                 //converting 2-3-4 tree to a red-black tree

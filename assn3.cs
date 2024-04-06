@@ -139,14 +139,15 @@ public class LazyBinomialHeap<T> where T : IComparable<T>
 
         // Merge H with the current binomial heap
         foreach (var kvp in H.roots)
-        {
+        {   
             int order = kvp.Key;
             List<BinomialNode> nodeList = kvp.Value;
-
+            //checking if the roots does not contain the order key
             if (!roots.ContainsKey(order))
-            {
+            {   //roots binomialnode at index order is nodelist
                 roots[order] = nodeList;
             }
+            //otherwise we will call the AddRange
             else
             {
                 roots[order].AddRange(nodeList);
@@ -156,11 +157,11 @@ public class LazyBinomialHeap<T> where T : IComparable<T>
         // Update maxNode if necessary
         maxNode = null;
         foreach (var nodeList in roots.Values)
-        {
+        {   
             foreach (var node in nodeList)
-            {
+            {   //checking if the maxNode is null or if we compare the nodes key with maxnode and it will be > 0 we will found the maxnode
                 if (maxNode == null || node.Key.CompareTo(maxNode.Key) > 0)
-                {
+                {   //so we make the maxnode to be the node
                     maxNode = node;
                 }
             }
@@ -168,23 +169,27 @@ public class LazyBinomialHeap<T> where T : IComparable<T>
     }
 
     public void Print()
-    {
+    {   
+        //printing each nodelist that will be in the roots binomialNode
         foreach (var nodeList in roots.Values)
-        {
+        {   //traversing through the each node in the nodelist
             foreach (var node in nodeList)
-            {
+            {   //printing the node
                 PrintTree(node, 0);
                 Console.WriteLine(); // For better readability between trees
             }
         }
     }
 
+    //for recursive calls the private method of the PrintTree that accepts 2 parameters 1) node, 2) depth
     private void PrintTree(BinomialNode node, int depth)
-    {
-        Console.Write(new string(' ', depth * 2) + node.Key);
+    {   
+        //it will print new string object all the time depth * 2 with the key assigned to it
+        Console.Write(new string(' ', depth * 2) + node.Key);   
         foreach (var child in node.Children)
-        {
+        {   //for better readability
             Console.WriteLine();
+            //recursive call
             PrintTree(child, depth + 1);
         }
     }
@@ -195,27 +200,29 @@ public class LazyBinomialHeap<T> where T : IComparable<T>
 public class TwoThreeFourTree<T> where T : IComparable<T>
 {
     private Node<T> root;
-    private class Node<T>
+    private class Node<U> where U : IComparable<U>
     {
+
+        public U[] key;
+        public Node<U>[] children;
         private int n; // number of keys
         private bool leaf; // true if a leaf node; false otherwise
-        private T[] key; // array of keys
         private Node<T>[] c; // array of child references
         public Node(int t)
         {
             n = 0;
             leaf = true;
-            key = new T[2 * t - 1];
+            key = new U[2 * t - 1];
             c = new Node<T>[2 * t];
         }
         // Public getter method for the key array
-        public T[] getKey()
+        public U[] getKey()
         {
             return key;
         }
 
         // Public add method for the key array
-        public void addKey(int index, T value)
+        public void addKey(int index, U value)
         {
             // Error statement if index is out of bounds
             if (index >= key.Length)
@@ -490,9 +497,100 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
 
     // Returns true if key k is successfully deleted; false otherwise. (10 marks)
     public bool Delete(T k)
+{
+    // Check if the tree is empty
+    if (root == null)
     {
         return false;
     }
+    //using the recursion calling the Delete method 
+    bool deleted = Delete(root, k);
+
+    // checking If the root is empty after deletion, make its first child the new root
+    if (deleted && root.getKey().All(key => key == null))
+    {   
+        root = root.getChildren()[0];
+    }
+    //true or false if everything went smooth true otherwise false
+    return deleted;
+}
+
+//this is the method I will use for the recursion call in the public method
+private bool Delete(Node<T> node, T k)
+{   //checking if the node is null
+    if (node == null)
+    {   //then I will return false
+        return false;
+    }
+    //initializing and populating the T keys with node keys
+    T[] keys = node.getKey();
+    //then children nodes with the getchildren method 
+    Node<T>[] children = node.getChildren();
+    //for the loop I will initialize it outside I will need this in other parts as well
+    int i = 0;
+    //while loop will go through the conditions and check if the index is less then size of the keys, and we will check if any of them are not null 
+    while (i < keys.Length && keys[i] != null && keys[i].CompareTo(k) < 0)
+    {   //then we will increment
+        i++;
+    }
+
+    // If the key is found in the current node
+    if (i < keys.Length && keys[i] != null && keys[i].CompareTo(k) == 0)
+    {
+        // If the node is a leaf, simply remove the key
+        if (node.checkLeaf())
+        {   //we will remove the key at index i
+            node.removeKey(i);
+            //and will return true
+            return true;
+        }
+        //otherwise
+        else
+        {
+            // If the node is internal, find the predecessor (or successor) so next of previous node
+            Node<T> child = children[i];
+            //checking the condition if the index is not null
+            if (child.getKey()[0] != null)
+            {   //then we will call the find max function and pass the child index
+                T predecessor = FindMax(child);
+                //we will addkey at the index of the i predecesor
+                node.addKey(i, predecessor);
+                //we will call the recursive call for the delete method
+                return Delete(child, predecessor);
+            }
+        }
+    }
+    // we will check if its not a leaf node
+    else if (!node.checkLeaf())
+    {
+        // Recurse to the correct child
+        return Delete(children[i], k);
+    }
+    //we will return false
+    return false;
+}
+
+//FIndmax function 
+private T FindMax(Node<T> node)
+{   
+    //checking if the node is not the leaf node
+    while (!node.checkLeaf())
+    {   //then the node will be assigned getChildren()[node.getChildren().Length - 1];
+        node = node.getChildren()[node.getChildren().Length - 1];
+    }
+    //we will populate keys with the getkey method 
+    T[] keys = node.getKey();
+    //starting fomr the end
+    int i = keys.Length - 1;
+    //checking if the i > 0 and the i is null
+    while (i >= 0 && keys[i] == null)
+    {
+        //then we will decrement we are coming from end to the start basically 
+        i--;
+    }  
+    //we will return the key at the index i
+    return keys[i];
+}
 
     // Returns true if key k is found; false otherwise (4 marks).
     public bool Search(T k)
@@ -577,47 +675,85 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
         return false;
     }
 
-    // Builds and returns the equivalent red-black tree. (8 marks).
-    // public BSTforRBTree<int> Convert()
-    // {   
-    //     // To do, use the BSTforRBTree file provided (Patrick said so)
-    // }
-
-    // Prints out the keys of the 2-3-4 tree in order. (4 marks)
-    public void Print()
+public BSTforRBTree<T> Convert() 
     {
-        PrintInOrder(root);
+        BSTforRBTree<T> rbTree = new BSTforRBTree<T>();
+        ConvertToRBTree(root, rbTree);
+        return rbTree;
     }
 
-
-    private void PrintInOrder(Node<T> node)
+//needed for the recursive calls
+ private void ConvertToRBTree(Node<T> node, BSTforRBTree<T> rbTree)
     {
         if (node == null)
         {
             return;
         }
 
-        T[] keys = node.getKey();
-        Node<T>[] children = node.getChildren();
+    // In-order traversal to maintain the sorted order
+    if (node.getChildren().Length > 0 && node.getChildren()[0] != null)
+    {
+        ConvertToRBTree(node.getChildren()[0], rbTree);
+    }
 
+    for (int i = 0; i < node.getKey().Length; i++)
+    {
+        if (node.getKey()[i] != null)
+        {
+            // Assuming all nodes are black in the resultant RB tree for simplicity
+            rbTree.Add(node.getKey()[i], Color.BLACK);
+            if (i < node.getChildren().Length - 1 && node.getChildren()[i + 1] != null)
+            {
+                ConvertToRBTree(node.getChildren()[i + 1], rbTree);
+            }
+        }
+    }
+
+    if (node.getKey().Length < node.getChildren().Length && node.getChildren()[node.getKey().Length] != null)
+    {
+        ConvertToRBTree(node.getChildren()[node.getKey().Length], rbTree);
+    }
+}
+
+    // Prints out the keys of the 2-3-4 tree in order. (4 marks)
+    public void Print()
+    {   
+        //calling the recursively the private method printINorder 
+        PrintInOrder(root);
+    }
+
+
+    private void PrintInOrder(Node<T> node)
+    {   //checking if the node is null
+        if (node == null)
+        {   //we will do nothing
+            return;
+        }
+        //keys populating with node keys with getkey method
+        T[] keys = node.getKey();
+        //getchildren, method, and populating it in the children node
+        Node<T>[] children = node.getChildren();
+        //for loop going from 0 to the last index and incrementing
         for (int i = 0; i < keys.Length; i++)
         {
             // Recursively print the left child
             if (i < children.Length && children[i] != null)
-            {
+            {   //calling the prinInorder recursively for the children at the index i
                 PrintInOrder(children[i]);
             }
 
             // Print the key
             if (keys[i] != null)
-            {
+            {   
+                //using the write I will print all the keys in order
                 Console.Write(keys[i] + " ");
             }
         }
 
         // Recursively print the rightmost child
         if (children.Length > keys.Length)
-        {
+        {   
+            //printing the rightmost child
             PrintInOrder(children[children.Length - 1]);
         }
     }
@@ -636,13 +772,10 @@ public interface ISearchable<T>
 //-------------------------------------------------------------------------
 
 // Implementation:  BSTforRBTree
-public class BSTforRBTree<T> : ISearchable<T> where T : IComparable
+public class BSTforRBTree<T> : ISearchable<T> where T : IComparable<T>
 {
-    // Common generic node class for a BSTforRBTree
     private class Node
     {
-
-        // Read/write properties
         public T Item;
         public Color RB;
         public Node Left;
@@ -655,6 +788,8 @@ public class BSTforRBTree<T> : ISearchable<T> where T : IComparable
             Left = Right = null;
         }
     }
+
+
 
     private Node root;
 
@@ -739,7 +874,6 @@ public class Program
     public static void Main(string[] args)
     {
 
-        // Quadtree
         PointQuadTree quadTree = new PointQuadTree(2); // 2-dimensional space
         int[] point1 = { 1, 0 }; // 10 is 2 in binary       00 - 0, 01 - 1, 10 - 2, 11 - 3,
         int[] point2 = { 1, 1 }; //11 is 3 in binary
@@ -807,13 +941,24 @@ public class Program
                 bst.Print();
                 Console.WriteLine("\n-------------------------");
 
+
             }
 
             if(op == "4"){
                 
                 tt4t.Print();
+                Console.WriteLine();
+                Console.WriteLine();
+                Console.WriteLine(tt4t.Delete(0) + "\n");
+                TwoThreeFourTree<int> twoThreeFourTree = new TwoThreeFourTree<int>();
+                //converting 2-3-4 tree to a red-black tree
+                BSTforRBTree<int> redBlackTree = twoThreeFourTree.Convert();
+                redBlackTree.Print();
+                
 
             }
+
+    
 
             else if (op == "x")
             {

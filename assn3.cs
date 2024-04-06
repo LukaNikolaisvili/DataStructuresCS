@@ -783,6 +783,52 @@ public BSTforRBTree<T> Convert()
         PrintInOrder(root);
     }
 
+    /* Print from ropes use for ref
+    // Print the augmented binary tree of the current rope (4 marks).
+    public void PrintRope()
+    {   //recursive call of PrintRope method Runtime stack...
+        PrintNode(this.root, 0);
+    }
+
+    //PrintNode method parameters node and indentation ***strength***
+    private void PrintNode(Node node, int indentation)
+    {   //try catch block 
+        try
+        {   //checking if node is empty
+            if (node == null)
+            {
+                // Skip printing "NULL" to avoid cluttering the output.
+                return;
+            }
+            
+            //indentation level for the children nodes are + 4
+            int childIndentation = indentation + 4;
+            //recursive call right side of the node and number of the indentation
+            PrintNode(node.Right, childIndentation);
+            
+            string indent = new String(' ', indentation);
+        //if the value of the node is not null then 
+            if (node.Value != null)
+            {   
+                // we will write the following nicely formated kinda tree looking structure, used UTF 8 type └ 
+                Console.WriteLine(indent + " └ (Size: " + node.Size + " | Value: '" + node.Value + "')");
+            }
+            else
+            {
+
+                Console.WriteLine(indent + "└ (Size: " + node.Size + ")");
+            }
+
+
+            PrintNode(node.Left, childIndentation);
+        }
+        catch (Exception ex)
+        {
+
+            Console.WriteLine("An error occurred: " + ex.Message);
+        }
+    }
+    */
 
     private void PrintInOrder(Node<T> node)
     {   //checking if the node is null
@@ -807,7 +853,7 @@ public BSTforRBTree<T> Convert()
             if (keys[i] != null)
             {   
                 //using the write I will print all the keys in order
-                Console.Write(keys[i] + "\n");
+                Console.Write(keys[i] + " ");
             }
         }
 
@@ -1010,10 +1056,10 @@ public class Program
                 tt4t.Print();
                 Console.WriteLine();
                 Console.WriteLine();
-                Console.WriteLine(tt4t.Insert(5) + "\n");
-                Console.WriteLine(tt4t.Insert(5) + "\n");
+                Console.WriteLine(tt4t.Insert(3) + "\n");
                 Console.WriteLine(tt4t.Insert(4) + "\n");
                 Console.WriteLine(tt4t.Insert(5) + "\n");
+                Console.WriteLine(tt4t.Insert(6) + "\n");
                 tt4t.Print();
                 Console.WriteLine(tt4t.Delete(5) + "\n");
                 tt4t.Print();

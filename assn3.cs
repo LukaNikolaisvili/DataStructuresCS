@@ -13,13 +13,17 @@ using System.Collections.Generic;
 // Part A: Point Quadtree
 public class PointQuadTree
 {
-    private Node[] B;
+    private Node[] B; //Array for storing node 
 
+    // used to initialize the quadtree with dimenions 
     public PointQuadTree(int dimensions)
     {
+
+        // used to initialize an array size based on the dimensions 
         B = new Node[(int)Math.Pow(2, dimensions)];
     }
 
+    // method used to compare 2 point to determine their index in the quadtree
     public int ComparePoints(int[] point1, int[] point2)
     {
         int index = 0;
@@ -33,7 +37,7 @@ public class PointQuadTree
             }
 
         }
-        return index;
+        return index;  // return the calcuted ined 
     }
 
     private class Node
@@ -46,6 +50,7 @@ public class PointQuadTree
 public class LazyBinomialHeap<T> where T : IComparable<T>
 {
     private Dictionary<int, List<BinomialNode>> roots;
+    // keep track of the biggest item in the heap.
     private BinomialNode maxNode;
 
     private class BinomialNode
@@ -62,29 +67,37 @@ public class LazyBinomialHeap<T> where T : IComparable<T>
         }
     }
 
+    //The constructor,used in settings up the heap.
     public LazyBinomialHeap()
     {
         roots = new Dictionary<int, List<BinomialNode>>();
         maxNode = null;
     }
-
+    // Adds a new item into the heap.
     public void Add(T item)
     {
-        var newNode = new BinomialNode(item);
+
+        var newNode = new BinomialNode(item);  // create a new node for the item
+
+        //vaildates the new item add 
         if (!roots.ContainsKey(0))
         {
             roots[0] = new List<BinomialNode>();
         }
+        //Adds the new item to the list.
         roots[0].Add(newNode);
 
+
+        //check if the new item is the biggest then save it as maxnode .
         if (maxNode == null || item.CompareTo(maxNode.Key) > 0)
         {
             maxNode = newNode;
         }
     }
-
+    // This method get the biggest item in the heap.
     public T Front()
     {
+        // checks that there is item in the heap
         if (maxNode == null)
         {
             throw new InvalidOperationException("Heap is empty");
@@ -92,7 +105,7 @@ public class LazyBinomialHeap<T> where T : IComparable<T>
 
         return maxNode.Key;
     }
-
+    // This method removes the biggest item from the heap.
     public void Remove()
     {
         if (maxNode == null)
@@ -100,11 +113,14 @@ public class LazyBinomialHeap<T> where T : IComparable<T>
             throw new InvalidOperationException("Heap is empty");
         }
 
+        // calls the method 
         Coalesce();
     }
 
+    //This method helps to put together or merge the trees in the heap
     private void Coalesce()
     {
+        // Checks if there are no items in the heap
         if (maxNode == null)
         {
             throw new InvalidOperationException("Heap is empty");
@@ -114,7 +130,7 @@ public class LazyBinomialHeap<T> where T : IComparable<T>
         List<BinomialNode> rootList = roots[maxNode.Order];
         rootList.Remove(maxNode);
 
-        // Insert the children of the removed tree into a new binomial heap H
+        // Insert the children of the removed tree into a new binomial heap called H
         LazyBinomialHeap<T> H = new LazyBinomialHeap<T>();
         foreach (var child in maxNode.Children)
         {

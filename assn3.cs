@@ -563,7 +563,7 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
                     else if (keys[i].CompareTo(k) < 0)
                     {
                         // Check if the next key exists
-                        if (keys[i + 1] != null)
+                        if (i + 1 < index)
                         {
                             // If it does check if the next key is greater than k
                             // If it isn't, the loop will simply go to the next iteration

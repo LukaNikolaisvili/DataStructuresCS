@@ -200,6 +200,13 @@ public class LazyBinomialHeap<T> where T : IComparable<T>
 public class TwoThreeFourTree<T> where T : IComparable<T>
 {
     private Node<T> root;
+
+    public bool IsEmpty()
+    {
+        // The tree is considered empty if the root is null or the root has no keys
+        return root == null || root.getKeyNum() == 0;
+    }
+
     private class Node<U> where U : IComparable<U>
     {
 
@@ -611,8 +618,9 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
     public bool Delete(T k)
     {
         // if the root is null return false
-        if (root == null)
+        if (root == null || (root.getKeyNum() == 0 && root.getChildren()[0] == null))
         {
+            Console.WriteLine("The tree is empty. You cannot delete anything else.");
             return false;
         }
         // recursivly call helper method, starting at the root
@@ -662,12 +670,12 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
             // This will set the left child as the current child as well!
 
             // Get the left child of current node, and Right child of current node based on i
-            Node<T> childLeft = children[i - 1];
+            Node<T> childLeft = children[i];
             if (childLeft == null)
             {
                 childLeft = child;
             }
-            Node<T> childRight = children[i + 1];
+            Node<T> childRight = children[i];
             if (childRight == null)
             {
                 childRight = child;
@@ -722,6 +730,15 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
                 }
             }
         }
+
+        if (root.getKeyNum() == 0)
+        {
+            if (root.getChildren()[0] != null)
+            {
+                root = root.getChildren()[0];
+            }
+        }
+
         return false;
     }
 
@@ -765,23 +782,30 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
             }
         }
 
-        if (x == root && x.getKeyNum() == 0 && x.getChildren()[0] != null) {
-    // If the leftmost child is full, we need to merge it with its sibling
-    if (x.getChildren()[0].getKeyNum() == 3) {
-        
-        if (x.getChildren()[1] != null) {
-            
-            Merge(x, 0);  
-            root = x.getChildren()[0]; // The merge operation will ensure the first child is now the new root
-        } else {
-            // Handle the case where there is no sibling to merge with This would be a special case handling
-            root = x.getChildren()[0]; 
+        if (x == root && x.getKeyNum() == 0 && x.getChildren()[0] != null)
+        {
+            // If the leftmost child is full, we need to merge it with its sibling
+            if (x.getChildren()[0].getKeyNum() == 3)
+            {
+
+                if (x.getChildren()[1] != null)
+                {
+
+                    Merge(x, 0);
+                    root = x.getChildren()[0]; // The merge operation will ensure the first child is now the new root
+                }
+                else
+                {
+                    // Handle the case where there is no sibling to merge with This would be a special case handling
+                    root = x.getChildren()[0];
+                }
+            }
+            else
+            {
+                // If the leftmost child is not full, it can safely become the new root
+                root = x.getChildren()[0];
+            }
         }
-    } else {
-        // If the leftmost child is not full, it can safely become the new root
-        root = x.getChildren()[0];
-    }
-}
 
         // Remove the key from node x at index i
         x.removeKey(i);
@@ -937,7 +961,7 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
                 if (childindex < numchildren)
                 {
                     // Go down the next sibling
-                    current = children[childindex+1];
+                    current = children[childindex + 1];
                 }
                 else
                 {
@@ -1277,112 +1301,95 @@ public class Program
 
             if (op == "3")
             {
-                // // Test TwoThreeFourTree
-                // BSTforRBTree<int> bst = new BSTforRBTree<int>();
-                // Color red = new Color();
-                // red = Color.RED;
-                // Color black = new Color();
-                // black = Color.BLACK;
-
-                // TwoThreeFourTree<int> tt4t = new TwoThreeFourTree<int>();
-                // tt4t.Insert(3);
-                // tt4t.Insert(4);
-                // tt4t.Insert(5);
-                // tt4t.Insert(6);
-                // tt4t.Insert(7);
-                // tt4t.Insert(8);
-                // tt4t.Insert(99);
-                // tt4t.Insert(98);
-                // tt4t.Insert(76);
-                // tt4t.Insert(1);
-                // tt4t.Insert(2);
-
-                // // Convert to RB format
-                // tt4t.Convert();
-
-                // Console.WriteLine("\n2-3-4 Tree format\n");
-
-                // // Print the tree
-                // tt4t.PrintBTree();
-
-                // Console.WriteLine("\nConverting to RB tree format\n");
-                // // Convert 2-3-4 tree to a red-black tree
-                // BSTforRBTree<int> redBlackTree = tt4t.Convert();
-                // redBlackTree.Print();
-
+                // Assuming TwoThreeFourTree and BSTforRBTree classes are already defined elsewhere
                 BSTforRBTree<int> redBlackTree;
                 Console.WriteLine("\nEnter values to insert into TwoThreeFourTree (separated by comma): ");
                 string input = Console.ReadLine();
                 string[] separator = input.Split(',');
-                int[] inputArray = new int[separator.Length];
-                int i = 0;
-
                 TwoThreeFourTree<int> tt4t = new TwoThreeFourTree<int>();
                 foreach (string value in separator)
                 {
                     if (int.TryParse(value, out int intValue))
                     {
-                        inputArray[i] = intValue;
+                        tt4t.Insert(intValue);
                     }
-                    i++;
-                }
-                for (i = 0; i < inputArray.Length; i++)
-                {
-                    tt4t.Insert(inputArray[i]);
                 }
 
                 // Print the tree
                 Console.WriteLine("\nTwoThreeFourTree:");
-
                 tt4t.PrintBTree();
 
                 Console.WriteLine("\nRBTree:");
                 redBlackTree = tt4t.Convert();
                 redBlackTree.Print();
 
-                Console.WriteLine();
-                Console.WriteLine("Do you want to remove something from the tree? (y or n)");
-                String usercall = Console.ReadLine();
-                while (usercall != null)
+                while (true)
                 {
-                    if (usercall == "Y".ToLower())
+
+                    if (tt4t.IsEmpty())
+                    {
+                        Console.WriteLine("The tree is empty. There are no elements to remove.");
+                        break;
+                    }
+                    else{
+
+                    
+
+                    Console.WriteLine("\nDo you want to remove something from the tree? (y/n)");
+                    string usercall = Console.ReadLine().ToLower();
+                    if (usercall == "y")
                     {
                         Console.WriteLine("Please Enter the number from the tree you want to remove: ");
-                        string numTodelete = Console.ReadLine();
-                        Console.WriteLine();
-                        int.TryParse(numTodelete, out int StringToNum);
-                        tt4t.Delete(StringToNum);
-                        tt4t.PrintBTree();
-                        redBlackTree = tt4t.Convert();
-                        Console.WriteLine("This is the RB tree conversion:\n");
-                        redBlackTree.Print();
+                        
+                        if (int.TryParse(Console.ReadLine(), out int numToDelete))
+                        {
+                            if (tt4t.Search(numToDelete))
+                            {
+                                tt4t.Delete(numToDelete);
+                                Console.WriteLine("\nAfter deletion:");
+                                tt4t.PrintBTree();
+                                redBlackTree = tt4t.Convert();
+                                Console.WriteLine("RB tree conversion:");
+                                redBlackTree.Print();
+                            }
+                            else
+                            {
+                                Console.WriteLine("The number is not in the tree.");
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("Invalid number.");
+                        }
                     }
-                    else if (usercall == "N".ToLower())
+                    else if (usercall == "n")
                     {
                         break;
                     }
-
                     else
                     {
-                        Console.WriteLine("Please enter 'Y' or 'N'. ");
+                        Console.WriteLine("Invalid input. Please enter 'y' or 'n'.");
                     }
-                    Console.WriteLine("Do you want to remove something from the tree? (y or n)");
-                    usercall = Console.ReadLine();
                 }
+                
                 Console.WriteLine("Please Enter the number from the tree you want to search for: ");
-                string numToSearch = Console.ReadLine();
-                Console.WriteLine();
-                int.TryParse(numToSearch, out int StringToNum2);
-                bool result = tt4t.Search(StringToNum2);
-                if (result)
+                if (int.TryParse(Console.ReadLine(), out int numToSearch))
                 {
-                    Console.WriteLine("The key was found within the tree");
+                    bool result = tt4t.Search(numToSearch);
+                    if (result)
+                    {
+                        Console.WriteLine("The key was found within the tree.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("The key was not found within this tree.");
+                    }
                 }
                 else
                 {
-                    Console.WriteLine("The key was not found within this tree.");
+                    Console.WriteLine("Invalid number.");
                 }
-
+            }
             }
 
 

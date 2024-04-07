@@ -768,7 +768,7 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
         return false;
     }
 
-    
+
 
     public BSTforRBTree<T> Convert()
     {
@@ -778,21 +778,20 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
     }
 
     //needed for the recursive calls
-  private void ConvertToRBTree(Node<T> node, BSTforRBTree<T> rbTree, Color parentColor = Color.BLACK)
+   private void ConvertToRBTree(Node<T> node, BSTforRBTree<T> rbTree, Color parentColor = Color.BLACK)
 {
     if (node == null)
     {
         return;
     }
 
+    // Determine the color of the current node based on the parent's color
     Color currentNodeColor;
-
-
-    if (parentColor == Color.BLACK)
+    if (parentColor == Color.BLACK && node != root)
     {
         currentNodeColor = Color.RED;
     }
-    else // Parent is RED
+    else
     {
         currentNodeColor = Color.BLACK;
     }
@@ -803,7 +802,7 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
         ConvertToRBTree(node.getChildren()[0], rbTree, currentNodeColor);
     }
 
-    for (int i = 0; i < node.getKey().Length; i++)
+    for (int i = 0; i < node.getKeyNum(); i++)
     {
         if (node.getKey()[i] != null)
         {
@@ -826,103 +825,52 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
 
 
 
-    // Prints out the keys of the 2-3-4 tree in order. (4 marks)
-
-    /* Print from ropes use for ref
-    // Print the augmented binary tree of the current rope (4 marks).
-    public void PrintRope()
-    {   //recursive call of PrintRope method Runtime stack...
-        PrintNode(this.root, 0);
-    }
-
-    //PrintNode method parameters node and indentation ***strength***
-    private void PrintNode(Node node, int indentation)
-    {   //try catch block 
-        try
-        {   //checking if node is empty
-            if (node == null)
-            {
-                // Skip printing "NULL" to avoid cluttering the output.
-                return;
-            }
-            
-            //indentation level for the children nodes are + 4
-            int childIndentation = indentation + 4;
-            //recursive call right side of the node and number of the indentation
-            PrintNode(node.Right, childIndentation);
-            
-            string indent = new String(' ', indentation);
-        //if the value of the node is not null then 
-            if (node.Value != null)
-            {   
-                // we will write the following nicely formated kinda tree looking structure, used UTF 8 type └ 
-                Console.WriteLine(indent + " └ (Size: " + node.Size + " | Value: '" + node.Value + "')");
-            }
-            else
-            {
-
-                Console.WriteLine(indent + "└ (Size: " + node.Size + ")");
-            }
-
-
-            PrintNode(node.Left, childIndentation);
-        }
-        catch (Exception ex)
+    public void PrintBTree()
+    {
+        if (root == null) // Check if the tree is empty
         {
-
-            Console.WriteLine("An error occurred: " + ex.Message);
+            Console.WriteLine("The tree is empty.");
+            return;
         }
-    }
-    */
 
-
-    //printing the 2-3-4 tree b tree t=2 tree
-public void PrintBTree()
-{
-    if (root == null) // Check if the tree is empty
-    {
-        Console.WriteLine("The tree is empty.");
-        return;
+        PrintNode(root, 0); // Start printing from the root with an indentation level of 0
     }
 
-    PrintNode(root, 0); // Start printing from the root with an indentation level of 0
-}
-
-private void PrintNode(Node<T> node, int indentation)
-{
-    if (node == null)
+    private void PrintNode(Node<T> node, int indentation)
     {
-        return;
-    }
-
-    int childIndentation = indentation + 1;
-    Node<T>[] children = node.getChildren(); // Assuming GetChildren returns an array of child nodes
-    T[] keys = node.getKey(); // Assuming GetKey returns an array of keys
-
-    // Print the keys of the current node, excluding zeros
-    List<T> nonZeroKeys = keys.Where(key => !key.Equals(default(T)) && !key.Equals(0)).ToList();
-    if (nonZeroKeys.Count > 0)
-    {
-        Console.Write(new string(' ', indentation * 4)); // 4 spaces for each level of indentation
-        Console.Write("(Keys: ");
-        for (int i = 0; i < nonZeroKeys.Count; i++)
+        if (node == null)
         {
-            Console.Write(nonZeroKeys[i]);
-            if (i < nonZeroKeys.Count - 1)
-            {
-                Console.Write(", ");
-            }
+            return;
         }
-        Console.Write(") ");
-        Console.WriteLine();
-    }
 
-    // Recursively print children nodes
-    for (int i = 0; i < children.Length; i++)
-    {
-        PrintNode(children[i], childIndentation);
+        int childIndentation = indentation + 1;
+        Node<T>[] children = node.getChildren(); // Assuming GetChildren returns an array of child nodes
+        T[] keys = node.getKey(); // Assuming GetKey returns an array of keys
+
+        // Print the keys of the current node, excluding zeros
+        List<T> nonZeroKeys = keys.Where(key => !key.Equals(default(T)) && !key.Equals(0)).ToList();
+        if (nonZeroKeys.Count > 0)
+        {
+            Console.Write(new string(' ', indentation * 4)); // 4 spaces for each level of indentation
+            Console.Write("(Keys: ");
+            for (int i = 0; i < nonZeroKeys.Count; i++)
+            {
+                Console.Write(nonZeroKeys[i]);
+                if (i < nonZeroKeys.Count - 1)
+                {
+                    Console.Write(", ");
+                }
+            }
+            Console.Write(") ");
+            Console.WriteLine();
+        }
+
+        // Recursively print children nodes
+        for (int i = 0; i < children.Length; i++)
+        {
+            PrintNode(children[i], childIndentation);
+        }
     }
-}
 }
 
 
@@ -965,12 +913,12 @@ public class BSTforRBTree<T> : ISearchable<T> where T : IComparable<T>
 
 
     public void EnsureRootBlack()
-{
-    if (this.root != null)
     {
-        this.root.RB = Color.BLACK;
+        if (this.root != null)
+        {
+            this.root.RB = Color.BLACK;
+        }
     }
-}
     // Add 
     // Insert an item into a BSTforRBTRee
     // Duplicate items are not inserted
@@ -1149,18 +1097,20 @@ public class Program
                 tt4t.Insert(76);
                 tt4t.Insert(1);
                 tt4t.Insert(2);
+                
                 tt4t.Convert();
 
                 tt4t.PrintBTree();
+
+                Console.WriteLine("\n Converting to RB format\n");
                 // tt4t.Print();
                 TwoThreeFourTree<int> twoThreeFourTree = new TwoThreeFourTree<int>();
                 //converting 2-3-4 tree to a red-black tree
                 BSTforRBTree<int> redBlackTree = tt4t.Convert();
                 redBlackTree.Print();
-                
+
 
             }
-
 
 
             else if (op == "x")

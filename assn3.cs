@@ -1118,14 +1118,14 @@ public class Program
                 tt4t.Insert(76);
                 tt4t.Insert(1);
                 tt4t.Insert(2);
-                
+                tt4t.Convert();
 
                 tt4t.PrintBTree();
                 // tt4t.Print();
                 TwoThreeFourTree<int> twoThreeFourTree = new TwoThreeFourTree<int>();
                 //converting 2-3-4 tree to a red-black tree
-                // BSTforRBTree<int> redBlackTree = twoThreeFourTree.Convert();
-                // redBlackTree.Print();
+                BSTforRBTree<int> redBlackTree = twoThreeFourTree.Convert();
+                redBlackTree.Print();
                 
 
             }

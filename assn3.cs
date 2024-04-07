@@ -857,63 +857,69 @@ public BSTforRBTree<T> Convert()
     }
     */
 
+
+//printing the 2-3-4 tree b tree t=2 tree
 public void PrintBTree()
-    {
+    {   //checking the depth of the tree
         int depth = GetDepth(root);
+        //starting from the level one going till the depth and incrmeneting each time
         for (int level = 1; level <= depth; level++)
-        {
+        {   //updating the value of the level each time
             PrintLevel(root, level, 1);
             Console.WriteLine();
         }
+        //at the end I am going to say how deep is the tree
         Console.WriteLine($"Total levels: {depth}");
     }
 
+    //printing the level recursive method
     private void PrintLevel(Node<T> node, int targetLevel, int currentLevel)
-{
+{   //checking if the node is null
     if (node == null)
-    {
+    {   //we are going to do nothing
         return;
     }
-
+    //I will check for if the curret level is the same thing as the targetlevel
     if (targetLevel == currentLevel)
-    {
+    {   
         T[] keys = node.getKey(); // Assuming GetKey returns an array of keys
-        for (int i = 0; i < keys.Length; i++)
-        {
+        for (int i = 0; i < keys.Length; i++) //iterate
+        {   
             // Check if the key is not null or not the default value if it's a value type
             if (keys[i] != null && !keys[i].Equals(default(T)))
-            {
+            {   //print the keys at index i parametrize print
                 Console.Write($"{keys[i]} ");
             }
-            else
-            {
+            //otherwise
+            else    
+            {   //print the space
                 Console.Write(" "); // Use a space for null or default values
             }
         }
-    }
+    }//otherwise
     else
-    {
+    {   
         Node<T>[] children = node.getChildren(); // Assuming GetChildren returns an array of child nodes
-        foreach (Node<T> child in children)
-        {
+        foreach (Node<T> child in children) //iterate child from the children nodes
+        {   //printLevel and each time add one more level
             PrintLevel(child, targetLevel, currentLevel + 1);
         }
     }
 }
-
+    //recursive method for calculating the depth of the tree
     private int GetDepth(Node<T> node)
-    {
+    {   
         if (node == null)
         {
             return 0;
         }
-
+        //starting from 0 and then if 1st depth +1
         int maxDepth = 0;
         Node<T>[] children = node.getChildren();
         foreach (Node<T> child in children)
-        {
+        {   //maxDepth we will get the max from the math library
             maxDepth = Math.Max(maxDepth, GetDepth(child));
-        }
+        }   //update the maxdepth
         return maxDepth + 1;
     }
 }
@@ -1107,7 +1113,7 @@ public class Program
                 tt4t.Insert(6);
                 tt4t.Insert(7);
                 tt4t.Insert(8);
-                tt4t.Insert(89);
+                tt4t.Insert(99);
                 tt4t.Insert(98);
                 tt4t.Insert(76);
                 tt4t.Insert(1);

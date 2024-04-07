@@ -645,6 +645,10 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
         else if (!node.checkLeaf())
         {
             Node<T> child = children[i];
+            if (i-1 < 0)
+            {
+                i = 1;
+            }
             Node<T> childLeft = children[i - 1];
             Node<T> childRight = children[i + 1];
             T[] keysR = childRight.getKey();

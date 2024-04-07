@@ -777,11 +777,6 @@ public BSTforRBTree<T> Convert()
 }
 
     // Prints out the keys of the 2-3-4 tree in order. (4 marks)
-    public void Print()
-    {   
-        //calling the recursively the private method printINorder 
-        PrintInOrder(root);
-    }
 
     /* Print from ropes use for ref
     // Print the augmented binary tree of the current rope (4 marks).
@@ -830,43 +825,67 @@ public BSTforRBTree<T> Convert()
     }
     */
 
-    private void PrintInOrder(Node<T> node)
-    {   //checking if the node is null
-        if (node == null)
-        {   //we will do nothing
-            return;
-        }
-        //keys populating with node keys with getkey method
-        T[] keys = node.getKey();
-        //getchildren, method, and populating it in the children node
-        Node<T>[] children = node.getChildren();
-        //for loop going from 0 to the last index and incrementing
-        for (int i = 0; i < node.getKeyNum(); i++)
+public void PrintBTree()
+    {
+        int depth = GetDepth(root);
+        for (int level = 1; level <= depth; level++)
         {
-            // Recursively print the left child
-            if (i < children.Length && children[i] != null)
-            {   //calling the prinInorder recursively for the children at the index i
-                PrintInOrder(children[i]);
-            }
-
-            // Print the key
-            if (keys[i] != null)
-            {   
-                //using the write I will print all the keys in order
-                Console.Write(keys[i] + " ");
-            }
+            PrintLevel(root, level, 1);
+            Console.WriteLine();
         }
-
-        // Recursively print the rightmost child
-        if (children.Length > node.getKeyNum())
-        {   
-            //printing the rightmost child
-            PrintInOrder(children[children.Length - 1]);
-        }
+        Console.WriteLine($"Total levels: {depth}");
     }
 
+    private void PrintLevel(Node<T> node, int targetLevel, int currentLevel)
+{
+    if (node == null)
+    {
+        return;
+    }
 
+    if (targetLevel == currentLevel)
+    {
+        T[] keys = node.getKey(); // Assuming GetKey returns an array of keys
+        for (int i = 0; i < keys.Length; i++)
+        {
+            // Check if the key is not null or not the default value if it's a value type
+            if (keys[i] != null && !keys[i].Equals(default(T)))
+            {
+                Console.Write($"{keys[i]} ");
+            }
+            else
+            {
+                Console.Write(" "); // Use a space for null or default values
+            }
+        }
+    }
+    else
+    {
+        Node<T>[] children = node.getChildren(); // Assuming GetChildren returns an array of child nodes
+        foreach (Node<T> child in children)
+        {
+            PrintLevel(child, targetLevel, currentLevel + 1);
+        }
+    }
 }
+
+    private int GetDepth(Node<T> node)
+    {
+        if (node == null)
+        {
+            return 0;
+        }
+
+        int maxDepth = 0;
+        Node<T>[] children = node.getChildren();
+        foreach (Node<T> child in children)
+        {
+            maxDepth = Math.Max(maxDepth, GetDepth(child));
+        }
+        return maxDepth + 1;
+    }
+}
+
 
 public enum Color { RED, BLACK }; // Colors of the red-black tree
 
@@ -931,7 +950,7 @@ public class BSTforRBTree<T> : ISearchable<T> where T : IComparable<T>
                         inserted = true;
                     }
                     else
-                        curr = curr.Left;               // Move left
+                        curr = curr.Left;               // Move to the left
                 }
                 else
                     if (item.CompareTo(curr.Item) > 0)
@@ -942,7 +961,7 @@ public class BSTforRBTree<T> : ISearchable<T> where T : IComparable<T>
                         inserted = true;
                     }
                     else
-                        curr = curr.Right;          // Move right
+                        curr = curr.Right;          // Move to the right
                 }
                 else
                     inserted = true;                // Already inserted
@@ -956,9 +975,6 @@ public class BSTforRBTree<T> : ISearchable<T> where T : IComparable<T>
         Console.WriteLine();
     }
 
-    // Print
-    // Inorder traversal of the BSTforRBTree
-    // Time complexity:  O(n)
 
     private void Print(Node node, int k)
     {
@@ -992,7 +1008,7 @@ public class Program
 
         BSTforRBTree<int> bst = new BSTforRBTree<int>();
 
-        TwoThreeFourTree<int> tt4t = new TwoThreeFourTree<int>();
+        
     
 
         Color red = new Color();
@@ -1052,21 +1068,26 @@ public class Program
             }
 
             if(op == "4"){
+                TwoThreeFourTree<int> tt4t = new TwoThreeFourTree<int>();
+                tt4t.Insert(3);
+                tt4t.Insert(4);
+                tt4t.Insert(5);
+                tt4t.Insert(6);
+                tt4t.Insert(7);
+                tt4t.Insert(8);
+                tt4t.Insert(89);
+                tt4t.Insert(98);
+                tt4t.Insert(76);
+                tt4t.Insert(1);
+                tt4t.Insert(2);
                 
-                tt4t.Print();
-                Console.WriteLine();
-                Console.WriteLine();
-                Console.WriteLine(tt4t.Insert(3) + "\n");
-                Console.WriteLine(tt4t.Insert(4) + "\n");
-                Console.WriteLine(tt4t.Insert(5) + "\n");
-                Console.WriteLine(tt4t.Insert(6) + "\n");
-                tt4t.Print();
-                Console.WriteLine(tt4t.Delete(5) + "\n");
-                tt4t.Print();
+
+                tt4t.PrintBTree();
+                // tt4t.Print();
                 TwoThreeFourTree<int> twoThreeFourTree = new TwoThreeFourTree<int>();
                 //converting 2-3-4 tree to a red-black tree
-                BSTforRBTree<int> redBlackTree = twoThreeFourTree.Convert();
-                redBlackTree.Print();
+                // BSTforRBTree<int> redBlackTree = twoThreeFourTree.Convert();
+                // redBlackTree.Print();
                 
 
             }

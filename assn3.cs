@@ -765,6 +765,24 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
             }
         }
 
+        if (x == root && x.getKeyNum() == 0 && x.getChildren()[0] != null) {
+    // If the leftmost child is full, we need to merge it with its sibling
+    if (x.getChildren()[0].getKeyNum() == 3) {
+        
+        if (x.getChildren()[1] != null) {
+            
+            Merge(x, 0);  
+            root = x.getChildren()[0]; // The merge operation will ensure the first child is now the new root
+        } else {
+            // Handle the case where there is no sibling to merge with This would be a special case handling
+            root = x.getChildren()[0]; 
+        }
+    } else {
+        // If the leftmost child is not full, it can safely become the new root
+        root = x.getChildren()[0];
+    }
+}
+
         // Remove the key from node x at index i
         x.removeKey(i);
 

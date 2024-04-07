@@ -645,7 +645,7 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
         else if (!node.checkLeaf())
         {
             Node<T> child = children[i];
-            if (i-1 < 0)
+            if (i - 1 < 0)
             {
                 i = 1;
             }
@@ -853,7 +853,7 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
 
         // Store the children array
         Node<T>[] children = current.getChildren();
-        int childindex = children.Length -1;
+        int childindex = children.Length - 1;
 
         // For every integer up until the last child
         for (int i = 0; i < childindex; i++)
@@ -1214,31 +1214,52 @@ public class Program
                 Console.WriteLine();
                 Console.WriteLine("Do you want to remove something from the tree? (y or n)");
                 String usercall = Console.ReadLine();
-                while (usercall != null)
+                if (usercall == "Y".ToLower())
                 {
-                    if (usercall == "Y".ToLower() || usercall == "y")
-                    {
-                        Console.WriteLine("Please Enter the number from the tree you want to remove: ");
-                        string numTodelete = Console.ReadLine();
-                        Console.WriteLine();
-                        int.TryParse(numTodelete, out int StringToNum);
-                        tt4t.Delete(StringToNum);
-                        tt4t.PrintBTree();
-                        redBlackTree = tt4t.Convert();
-                        Console.WriteLine("This is the RB tree conversion:\n");
-                        redBlackTree.Print();
-                    }
-                    else if (usercall == "n".ToUpper() || usercall == "N")
-                    {
-                        return;
-                    }
-
-                    else
-                    {
-                        Console.WriteLine("Please enter 'Y' or 'N'. ");
-                    }
+                    Console.WriteLine("Please Enter the number from the tree you want to remove: ");
+                    string numTodelete = Console.ReadLine();
+                    Console.WriteLine();
+                    int.TryParse(numTodelete, out int StringToNum);
+                    tt4t.Delete(StringToNum);
+                    tt4t.PrintBTree();
+                    redBlackTree = tt4t.Convert();
+                    Console.WriteLine("This is the RB tree conversion:\n");
+                    redBlackTree.Print();
+                }
+                else if (usercall == "N".ToLower())
+                {
+                    return;
                 }
 
+                else
+                {
+
+
+                    while (usercall != "Y".ToLower() || usercall != "N".ToLower())
+                    {
+                        Console.WriteLine("Please enter 'Y' or 'N'. ");
+                        usercall = Console.ReadLine();
+
+                        if (usercall == "Y".ToLower())
+                        {
+                            Console.WriteLine("Please Enter the number from the tree you want to remove: ");
+                            string numTodelete = Console.ReadLine();
+                            Console.WriteLine();
+                            int.TryParse(numTodelete, out int StringToNum);
+                            tt4t.Delete(StringToNum);
+                            tt4t.PrintBTree();
+                            redBlackTree = tt4t.Convert();
+                            Console.WriteLine("This is the RB tree conversion:\n");
+                            redBlackTree.Print();
+                        }
+                        else if (usercall == "N".ToLower())
+                        {
+                            Console.WriteLine("Okay then :)");
+                            return;
+                        }
+                    }
+
+                }
             }
 
 

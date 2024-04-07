@@ -1252,37 +1252,47 @@ public class Program
 
             if (op == "1")
             {
-                // PointQuadTree quadTree = new PointQuadTree(2); // 2-dimensional space
-                // int[] point1 = { 1, 0 }; // 10 is 2 in binary       00 - 0, 01 - 1, 10 - 2, 11 - 3,
-                // int[] point2 = { 1, 1 }; //11 is 3 in binary
-
-                // int index = quadTree.ComparePoints(point1, point2);
-                // int index2 = quadTree.ComparePoints(point2, point1);
-
-                // // Print the results
-                // Console.WriteLine("// Quadtree Point Comparison Test\n");
-                // Console.WriteLine("Point 1: (1, 0), Point 2: (1, 1)\n");
-
-                Console.WriteLine("Enter values for Point 1 (in the format x,y):");
-                string[] point1Input = Console.ReadLine().Split(',');
-                int[] point1 = Array.ConvertAll(point1Input, int.Parse);
-
-                Console.WriteLine("Enter values for Point 2 (in the format x,y):");
-                string[] point2Input = Console.ReadLine().Split(',');
-                int[] point2 = Array.ConvertAll(point2Input, int.Parse);
-
                 PointQuadTree quadTree = new PointQuadTree(2); // 2-dimensional space
+                int[] point1 = new int[2];
+                int[] point2 = new int[2];
 
+                while (true)
+                {
+                    Console.WriteLine("Enter values for Point 1 (in the format x,y):");
+                    string[] point1Input = Console.ReadLine().Split(',');
+                    if (point1Input.Length == 2 && int.TryParse(point1Input[0], out point1[0]) && int.TryParse(point1Input[1], out point1[1]))
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine("You have to enter two integer values for x and y. Please try again.");
+                    }
+                }
+
+                while (true)
+                {
+                    Console.WriteLine("Enter values for Point 2 (in the format x,y):");
+                    string[] point2Input = Console.ReadLine().Split(',');
+                    if (point2Input.Length == 2 && int.TryParse(point2Input[0], out point2[0]) && int.TryParse(point2Input[1], out point2[1]))
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine("You have to enter two integer values for x and y. Please try again.");
+                    }
+                }
+
+                // Use the quadTree to compare points
                 int index = quadTree.ComparePoints(point1, point2);
                 int index2 = quadTree.ComparePoints(point2, point1);
 
                 // Print the results
                 Console.WriteLine("\n// Quadtree Point Comparison Test\n");
-                Console.WriteLine($"Point 1: ({point1[0]}, {point1[1]}), Point 2: ({point2[0]}, {point2[1]})\n");
+                Console.WriteLine($"Point 1: ({point1[0]}, {point1[1]}), Point 2: ({point2[0]}, {point2[1]})");
                 Console.WriteLine("Index of Point 1 relative to Point 2: " + index);
                 Console.WriteLine("Index of Point 2 relative to Point 1: " + index2);
-
-
             }
 
             if (op == "2")

@@ -1116,25 +1116,16 @@ public class Program
                 // BSTforRBTree<int> redBlackTree = tt4t.Convert();
                 // redBlackTree.Print();
 
-                //testing use 
-                Console.WriteLine("\nEnter values to insert into TwoThreeFourTree (separated by comma): ");
+               Console.WriteLine("\nEnter values to insert into TwoThreeFourTree (separated by comma): ");
                 string input = Console.ReadLine();
                 string[] separator = input.Split(',');
 
                 TwoThreeFourTree<int> tt4t = new TwoThreeFourTree<int>();
-                tt4t.Insert(3);
-                tt4t.Insert(4);
-                tt4t.Insert(5);
-                tt4t.Insert(6);
-                tt4t.Insert(7);
-                tt4t.Insert(8);
-                tt4t.Insert(99);
-                tt4t.Insert(98);
-                tt4t.Insert(76);
-                tt4t.Insert(1);
-                tt4t.Insert(2);
-
-                tt4t.Convert();
+                foreach (string value in separator)
+                {
+                    if (int.TryParse(value, out int intValue))
+                        tt4t.Insert(intValue);
+                }
 
                 // Print the tree
                 Console.WriteLine("\nTwoThreeFourTree:");
@@ -1145,9 +1136,7 @@ public class Program
                 BSTforRBTree<int> redBlackTree = tt4t.Convert();
                 redBlackTree.Print();
 
-
             }
-
 
 
             else if (op == "x")

@@ -306,7 +306,7 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
 
         public void setLeaf(int check)
         {
-             if (check == 0)
+            if (check == 0)
             {
                 leaf = true;
             }
@@ -802,50 +802,50 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
     }
 
     //needed for the recursive calls
-   private void ConvertToRBTree(Node<T> node, BSTforRBTree<T> rbTree, Color parentColor = Color.BLACK)
-{
-    if (node == null)
+    private void ConvertToRBTree(Node<T> node, BSTforRBTree<T> rbTree, Color parentColor = Color.BLACK)
     {
-        return;
-    }
-
-    // Determine the color of the current node based on the parent's color
-    Color currentNodeColor;
-    if (parentColor == Color.BLACK && node != root)
-    {
-        currentNodeColor = Color.RED;
-    }
-    else
-    {
-        currentNodeColor = Color.BLACK;
-    }
-
-    // In-order traversal to maintain the sorted order
-    if (node.getChildren().Length > 0 && node.getChildren()[0] != null)
-    {
-        ConvertToRBTree(node.getChildren()[0], rbTree, currentNodeColor);
-    }
-
-    for (int i = 0; i < node.getKeyNum(); i++)
-    {
-        if (node.getKey()[i] != null)
+        if (node == null)
         {
-            // Insert the current node with the determined color
-            rbTree.Add(node.getKey()[i], currentNodeColor);
+            return;
+        }
 
-            if (i < node.getChildren().Length - 1 && node.getChildren()[i + 1] != null)
+        // Determine the color of the current node based on the parent's color
+        Color currentNodeColor;
+        if (parentColor == Color.BLACK && node != root)
+        {
+            currentNodeColor = Color.RED;
+        }
+        else
+        {
+            currentNodeColor = Color.BLACK;
+        }
+
+        // In-order traversal to maintain the sorted order
+        if (node.getChildren().Length > 0 && node.getChildren()[0] != null)
+        {
+            ConvertToRBTree(node.getChildren()[0], rbTree, currentNodeColor);
+        }
+
+        for (int i = 0; i < node.getKeyNum(); i++)
+        {
+            if (node.getKey()[i] != null)
             {
-                ConvertToRBTree(node.getChildren()[i + 1], rbTree, currentNodeColor);
+                // Insert the current node with the determined color
+                rbTree.Add(node.getKey()[i], currentNodeColor);
+
+                if (i < node.getChildren().Length - 1 && node.getChildren()[i + 1] != null)
+                {
+                    ConvertToRBTree(node.getChildren()[i + 1], rbTree, currentNodeColor);
+                }
             }
         }
-    }
 
-    // Handle the rightmost child
-    if (node.getKey().Length < node.getChildren().Length && node.getChildren()[node.getKey().Length] != null)
-    {
-        ConvertToRBTree(node.getChildren()[node.getKey().Length], rbTree, currentNodeColor);
+        // Handle the rightmost child
+        if (node.getKey().Length < node.getChildren().Length && node.getChildren()[node.getKey().Length] != null)
+        {
+            ConvertToRBTree(node.getChildren()[node.getKey().Length], rbTree, currentNodeColor);
+        }
     }
-}
 
 
 
@@ -1016,17 +1016,6 @@ public class Program
     public static void Main(string[] args)
     {
 
-
-        BSTforRBTree<int> bst = new BSTforRBTree<int>();
-
-
-
-
-        Color red = new Color();
-        red = Color.RED;
-        Color black = new Color();
-        black = Color.BLACK;
-
         Console.WriteLine("\nHello there!");
         bool flag = false;
 
@@ -1035,7 +1024,7 @@ public class Program
         {
 
             Console.WriteLine("\nChoose any of those operations: ");
-            Console.WriteLine("\n1 - PArt A \n2 - LBH \n3 - RB tree print\n4 - TwoThreeFourTreePrint");
+            Console.WriteLine("\n1 - PArt A \n2 - LBH \n3 - TwoThreeFourTree");
             Console.WriteLine("-----------------");
 
 
@@ -1092,23 +1081,15 @@ public class Program
                 Console.WriteLine("\n-------------------------\n");
             }
 
-
             if (op == "3")
             {
+                // Test TwoThreeFourTree
+                BSTforRBTree<int> bst = new BSTforRBTree<int>();
+                Color red = new Color();
+                red = Color.RED;
+                Color black = new Color();
+                black = Color.BLACK;
 
-                bst.Add(10, red);
-                bst.Add(20, black);
-                bst.Add(12, red);
-                bst.Add(25, black);
-
-                bst.Print();
-                Console.WriteLine("\n-------------------------");
-
-
-            }
-
-            if (op == "4")
-            {
                 TwoThreeFourTree<int> tt4t = new TwoThreeFourTree<int>();
                 tt4t.Insert(3);
                 tt4t.Insert(4);
@@ -1121,36 +1102,38 @@ public class Program
                 tt4t.Insert(76);
                 tt4t.Insert(1);
                 tt4t.Insert(2);
-                
+
+                // Convert to RB format
                 tt4t.Convert();
 
+                Console.WriteLine("\n2-3-4 Tree format\n");
+
+                // Print the tree
                 tt4t.PrintBTree();
 
-                Console.WriteLine("\n Converting to RB format\n");
-                // tt4t.Print();
-                TwoThreeFourTree<int> twoThreeFourTree = new TwoThreeFourTree<int>();
-                //converting 2-3-4 tree to a red-black tree
+                Console.WriteLine("\nConverting to RB tree format\n");
+                // Convert 2-3-4 tree to a red-black tree
                 BSTforRBTree<int> redBlackTree = tt4t.Convert();
                 redBlackTree.Print();
-
-
-            }
-
-
-            else if (op == "x")
-            {
-                Console.WriteLine("Exiting...");
-                flag = false;
-
-                if (flag == false)
-                {
-                    Console.WriteLine("program exited succesfully...");
-                }
-
-
             }
 
         }
 
+
+            else if (op == "x")
+        {
+            Console.WriteLine("Exiting...");
+            flag = false;
+
+            if (flag == false)
+            {
+                Console.WriteLine("program exited succesfully...");
+            }
+
+
+        }
+
     }
+
+}
 }

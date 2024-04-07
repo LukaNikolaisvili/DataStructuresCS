@@ -739,36 +739,6 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
         x.removeChild(i + 1);
     }
 
-
-
-
-
-    //Findmax function 
-    private T FindMax(Node<T> node)
-    {
-        if (node == null)
-        {
-            return default;
-        }
-        //checking if the node is not the leaf node
-        while (!node.checkLeaf())
-        {   //then the node will be assigned getChildren()[node.getChildren().Length - 1];
-            node = node.getChildren()[node.getChildren().Length - 1];
-        }
-        //we will populate keys with the getkey method 
-        T[] keys = node.getKey();
-        //starting fomr the end
-        int i = node.getKeyNum() - 1;
-        //checking if the i > 0 and the i is null
-        while (i >= 0 && keys[i] == null)
-        {
-            //then we will decrement we are coming from end to the start basically 
-            i--;
-        }
-        //we will return the key at the index i
-        return keys[i];
-    }
-
     // Returns true if key k is found; false otherwise (4 marks).
     public bool Search(T k)
     {
@@ -898,6 +868,7 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
         }
         // Perform a last in-order traversal on the last child
         InOrderTraversal(children[childindex], keys);
+        keys.Sort();
     }
 
     // Private method for building the tree, called helper build method

@@ -139,7 +139,7 @@ public class LazyBinomialHeap<T> where T : IComparable<T>
 
         // Merge H with the current binomial heap
         foreach (var kvp in H.roots)
-        {   
+        {
             int order = kvp.Key;
             List<BinomialNode> nodeList = kvp.Value;
             //checking if the roots does not contain the order key
@@ -157,7 +157,7 @@ public class LazyBinomialHeap<T> where T : IComparable<T>
         // Update maxNode if necessary
         maxNode = null;
         foreach (var nodeList in roots.Values)
-        {   
+        {
             foreach (var node in nodeList)
             {   //checking if the maxNode is null or if we compare the nodes key with maxnode and it will be > 0 we will found the maxnode
                 if (maxNode == null || node.Key.CompareTo(maxNode.Key) > 0)
@@ -169,7 +169,7 @@ public class LazyBinomialHeap<T> where T : IComparable<T>
     }
 
     public void Print()
-    {   
+    {
         //printing each nodelist that will be in the roots binomialNode
         foreach (var nodeList in roots.Values)
         {   //traversing through the each node in the nodelist
@@ -183,9 +183,9 @@ public class LazyBinomialHeap<T> where T : IComparable<T>
 
     //for recursive calls the private method of the PrintTree that accepts 2 parameters 1) node, 2) depth
     private void PrintTree(BinomialNode node, int depth)
-    {   
+    {
         //it will print new string object all the time depth * 2 with the key assigned to it
-        Console.Write(new string(' ', depth * 2) + node.Key);   
+        Console.Write(new string(' ', depth * 2) + node.Key);
         foreach (var child in node.Children)
         {   //for better readability
             Console.WriteLine();
@@ -237,7 +237,7 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
             {
                 n--;
             }
-            
+
             // if the number of keys is less than 0, set it to 0.
             if (n < 0)
             {
@@ -414,7 +414,7 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
         Node<T> parent = p;
         int max = 3; // maximum number of keys something can hold (2t-1, where t is always 2)
         // This will hold the number of items in the keys array and update as code progresses
-        int index = p.getKeyNum(); 
+        int index = p.getKeyNum();
         // Array that will hold the children which will be updated as code progresses
         Node<T>[] children;
 
@@ -443,7 +443,7 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
             // Get the array of keys from the current node
             // Array that will hold the keys which will be updated as code progresses
             T[] keys = p.getKey();
-            
+
             // update index based on new keys array
             index = p.getKeyNum();
 
@@ -452,7 +452,7 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
             if (p.checkLeaf() == true)
             {
                 // Check if the key already exists or not
-                for(int j = 0; j < index; j++)
+                for (int j = 0; j < index; j++)
                 {
                     // See if the key matches, if so stop the insertion
                     if (keys[j].Equals(k))
@@ -472,7 +472,7 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
                 index = p.getKeyNum();
                 keys = p.getKey();
                 int insertindex = 0;
-                for(int j = 0; j < index; j++)
+                for (int j = 0; j < index; j++)
                 {
                     // if k is less than key at index j
                     if (keys[j].CompareTo(k) > 0)
@@ -497,7 +497,7 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
                             }
                             // Otherwise loop will continue to next iteration
                         }
-                        else 
+                        else
                         {
                             // Insert at the next index if no neighbour
                             insertindex = j + 1;
@@ -546,7 +546,7 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
                             // If it does check if the next key is greater than k
                             // If it isn't, the loop will simply go to the next iteration
                             // No additional code needed for that.
-                            if (keys[i+1].CompareTo(k) > 0)
+                            if (keys[i + 1].CompareTo(k) > 0)
                             {
                                 // Set child index to i+1 (the child right of the current key!)
                                 childindex = i + 1;
@@ -590,100 +590,100 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
 
     // Returns true if key k is successfully deleted; false otherwise. (10 marks)
     public bool Delete(T k)
-{
-    // Check if the tree is empty
-    if (root == null)
     {
-        return false;
-    }
-    //using the recursion calling the Delete method 
-    bool deleted = Delete(root, k);
-
-    // checking If the root is empty after deletion, make its first child the new root
-    if (deleted && root.getKey().All(key => key == null))
-    {   
-        root = root.getChildren()[0];
-    }
-    //true or false if everything went smooth true otherwise false
-    return deleted;
-}
-
-//this is the method I will use for the recursion call in the public method
-private bool Delete(Node<T> node, T k)
-{   //checking if the node is null
-    if (node == null)
-    {   //then I will return false
-        return false;
-    }
-    //initializing and populating the T keys with node keys
-    T[] keys = node.getKey();
-    //then children nodes with the getchildren method 
-    Node<T>[] children = node.getChildren();
-    //for the loop I will initialize it outside I will need this in other parts as well
-    int i = 0;
-    //while loop will go through the conditions and check if the index is less then size of the keys, and we will check if any of them are not null 
-    while (i < node.getKeyNum() && keys[i] != null && keys[i].CompareTo(k) < 0)
-    {   //then we will increment
-        i++;
-    }
-
-    // If the key is found in the current node
-    if (i < node.getKeyNum() && keys[i] != null && keys[i].CompareTo(k) == 0)
-    {
-        // If the node is a leaf, simply remove the key
-        if (node.checkLeaf())
-        {   //we will remove the key at index i
-            node.removeKey(i);
-            //and will return true
-            return true;
-        }
-        //otherwise
-        else
+        // Check if the tree is empty
+        if (root == null)
         {
-            // If the node is internal, find the predecessor (or successor) so next of previous node
-            Node<T> child = children[i];
-            //checking the condition if the index is not null
-            if (child.getKey()[0] != null)
-            {   //then we will call the find max function and pass the child index
-                T predecessor = FindMax(child);
-                //we will addkey at the index of the i predecesor
-                node.addKey(i, predecessor);
-                //we will call the recursive call for the delete method
-                return Delete(child, predecessor);
+            return false;
+        }
+        //using the recursion calling the Delete method 
+        bool deleted = Delete(root, k);
+
+        // checking If the root is empty after deletion, make its first child the new root
+        if (deleted && root.getKey().All(key => key == null))
+        {
+            root = root.getChildren()[0];
+        }
+        //true or false if everything went smooth true otherwise false
+        return deleted;
+    }
+
+    //this is the method I will use for the recursion call in the public method
+    private bool Delete(Node<T> node, T k)
+    {   //checking if the node is null
+        if (node == null)
+        {   //then I will return false
+            return false;
+        }
+        //initializing and populating the T keys with node keys
+        T[] keys = node.getKey();
+        //then children nodes with the getchildren method 
+        Node<T>[] children = node.getChildren();
+        //for the loop I will initialize it outside I will need this in other parts as well
+        int i = 0;
+        //while loop will go through the conditions and check if the index is less then size of the keys, and we will check if any of them are not null 
+        while (i < node.getKeyNum() && keys[i] != null && keys[i].CompareTo(k) < 0)
+        {   //then we will increment
+            i++;
+        }
+
+        // If the key is found in the current node
+        if (i < node.getKeyNum() && keys[i] != null && keys[i].CompareTo(k) == 0)
+        {
+            // If the node is a leaf, simply remove the key
+            if (node.checkLeaf())
+            {   //we will remove the key at index i
+                node.removeKey(i);
+                //and will return true
+                return true;
+            }
+            //otherwise
+            else
+            {
+                // If the node is internal, find the predecessor (or successor) so next of previous node
+                Node<T> child = children[i];
+                //checking the condition if the index is not null
+                if (child.getKey()[0] != null)
+                {   //then we will call the find max function and pass the child index
+                    T predecessor = FindMax(child);
+                    //we will addkey at the index of the i predecesor
+                    node.addKey(i, predecessor);
+                    //we will call the recursive call for the delete method
+                    return Delete(child, predecessor);
+                }
             }
         }
+        // we will check if its not a leaf node
+        else if (!node.checkLeaf())
+        {
+            // Recurse to the correct child
+            return Delete(children[i], k);
+        }
+        //we will return false
+        return false;
     }
-    // we will check if its not a leaf node
-    else if (!node.checkLeaf())
-    {
-        // Recurse to the correct child
-        return Delete(children[i], k);
-    }
-    //we will return false
-    return false;
-}
 
-//FIndmax function 
-private T FindMax(Node<T> node)
-{   
-    //checking if the node is not the leaf node
-    while (!node.checkLeaf())
-    {   //then the node will be assigned getChildren()[node.getChildren().Length - 1];
-        node = node.getChildren()[node.getChildren().Length - 1];
-    }
-    //we will populate keys with the getkey method 
-    T[] keys = node.getKey();
-    //starting fomr the end
-    int i = node.getKeyNum() - 1;
-    //checking if the i > 0 and the i is null
-    while (i >= 0 && keys[i] == null)
+    //FIndmax function 
+    private T FindMax(Node<T> node)
     {
-        //then we will decrement we are coming from end to the start basically 
-        i--;
-    }  
-    //we will return the key at the index i
-    return keys[i];
-}
+        //checking if the node is not the leaf node
+        while (!node.checkLeaf())
+        {   //then the node will be assigned getChildren()[node.getChildren().Length - 1];
+            node = node.getChildren()[node.getChildren().Length - 1];
+        }
+        //we will populate keys with the getkey method 
+        T[] keys = node.getKey();
+        //starting fomr the end
+        int i = node.getKeyNum() - 1;
+        //checking if the i > 0 and the i is null
+        while (i >= 0 && keys[i] == null)
+        {
+            //then we will decrement we are coming from end to the start basically 
+            i--;
+        }
+        //we will return the key at the index i
+        return keys[i];
+    }
 
     // Returns true if key k is found; false otherwise (4 marks).
     public bool Search(T k)
@@ -768,45 +768,45 @@ private T FindMax(Node<T> node)
         return false;
     }
 
-public BSTforRBTree<T> Convert() 
+    public BSTforRBTree<T> Convert()
     {
         BSTforRBTree<T> rbTree = new BSTforRBTree<T>();
         ConvertToRBTree(root, rbTree);
         return rbTree;
     }
 
-//needed for the recursive calls
- private void ConvertToRBTree(Node<T> node, BSTforRBTree<T> rbTree)
+    //needed for the recursive calls
+    private void ConvertToRBTree(Node<T> node, BSTforRBTree<T> rbTree)
     {
         if (node == null)
         {
             return;
         }
 
-    // In-order traversal to maintain the sorted order
-    if (node.getChildren().Length > 0 && node.getChildren()[0] != null)
-    {
-        ConvertToRBTree(node.getChildren()[0], rbTree);
-    }
-
-    for (int i = 0; i < node.getKey().Length; i++)
-    {
-        if (node.getKey()[i] != null)
+        // In-order traversal to maintain the sorted order
+        if (node.getChildren().Length > 0 && node.getChildren()[0] != null)
         {
-            // Assuming all nodes are black in the resultant RB tree for simplicity
-            rbTree.Add(node.getKey()[i], Color.BLACK);
-            if (i < node.getChildren().Length - 1 && node.getChildren()[i + 1] != null)
+            ConvertToRBTree(node.getChildren()[0], rbTree);
+        }
+
+        for (int i = 0; i < node.getKey().Length; i++)
+        {
+            if (node.getKey()[i] != null)
             {
-                ConvertToRBTree(node.getChildren()[i + 1], rbTree);
+                // Assuming all nodes are black in the resultant RB tree for simplicity
+                rbTree.Add(node.getKey()[i], Color.BLACK);
+                if (i < node.getChildren().Length - 1 && node.getChildren()[i + 1] != null)
+                {
+                    ConvertToRBTree(node.getChildren()[i + 1], rbTree);
+                }
             }
         }
-    }
 
-    if (node.getKey().Length < node.getChildren().Length && node.getChildren()[node.getKey().Length] != null)
-    {
-        ConvertToRBTree(node.getChildren()[node.getKey().Length], rbTree);
+        if (node.getKey().Length < node.getChildren().Length && node.getChildren()[node.getKey().Length] != null)
+        {
+            ConvertToRBTree(node.getChildren()[node.getKey().Length], rbTree);
+        }
     }
-}
 
     // Prints out the keys of the 2-3-4 tree in order. (4 marks)
 
@@ -858,8 +858,8 @@ public BSTforRBTree<T> Convert()
     */
 
 
-//printing the 2-3-4 tree b tree t=2 tree
-public void PrintBTree()
+    //printing the 2-3-4 tree b tree t=2 tree
+    public void PrintBTree()
     {   //checking the depth of the tree
         int depth = GetDepth(root);
         //starting from the level one going till the depth and incrmeneting each time
@@ -874,41 +874,41 @@ public void PrintBTree()
 
     //printing the level recursive method
     private void PrintLevel(Node<T> node, int targetLevel, int currentLevel)
-{   //checking if the node is null
-    if (node == null)
-    {   //we are going to do nothing
-        return;
-    }
-    //I will check for if the curret level is the same thing as the targetlevel
-    if (targetLevel == currentLevel)
-    {   
-        T[] keys = node.getKey(); // Assuming GetKey returns an array of keys
-        for (int i = 0; i < keys.Length; i++) //iterate
-        {   
-            // Check if the key is not null or not the default value if it's a value type
-            if (keys[i] != null && !keys[i].Equals(default(T)))
-            {   //print the keys at index i parametrize print
-                Console.Write($"{keys[i]} ");
+    {   //checking if the node is null
+        if (node == null)
+        {   //we are going to do nothing
+            return;
+        }
+        //I will check for if the curret level is the same thing as the targetlevel
+        if (targetLevel == currentLevel)
+        {
+            T[] keys = node.getKey(); // Assuming GetKey returns an array of keys
+            for (int i = 0; i < keys.Length; i++) //iterate
+            {
+                // Check if the key is not null or not the default value if it's a value type
+                if (keys[i] != null && !keys[i].Equals(default(T)))
+                {   //print the keys at index i parametrize print
+                    Console.Write($"{keys[i]} ");
+                }
+                //otherwise
+                else
+                {   //print the space
+                    Console.Write(" "); // Use a space for null or default values
+                }
             }
-            //otherwise
-            else    
-            {   //print the space
-                Console.Write(" "); // Use a space for null or default values
+        }//otherwise
+        else
+        {
+            Node<T>[] children = node.getChildren(); // Assuming GetChildren returns an array of child nodes
+            foreach (Node<T> child in children) //iterate child from the children nodes
+            {   //printLevel and each time add one more level
+                PrintLevel(child, targetLevel, currentLevel + 1);
             }
         }
-    }//otherwise
-    else
-    {   
-        Node<T>[] children = node.getChildren(); // Assuming GetChildren returns an array of child nodes
-        foreach (Node<T> child in children) //iterate child from the children nodes
-        {   //printLevel and each time add one more level
-            PrintLevel(child, targetLevel, currentLevel + 1);
-        }
     }
-}
     //recursive method for calculating the depth of the tree
     private int GetDepth(Node<T> node)
-    {   
+    {
         if (node == null)
         {
             return 0;
@@ -1035,19 +1035,11 @@ public class Program
     public static void Main(string[] args)
     {
 
-        PointQuadTree quadTree = new PointQuadTree(2); // 2-dimensional space
-        int[] point1 = { 1, 0 }; // 10 is 2 in binary       00 - 0, 01 - 1, 10 - 2, 11 - 3,
-        int[] point2 = { 1, 1 }; //11 is 3 in binary
-        int index = quadTree.ComparePoints(point1, point2);
-        int index2 = quadTree.ComparePoints(point2, point1);
-
-        // Testing LazyBinomialHeap
-        LazyBinomialHeap<int> heap = new LazyBinomialHeap<int>();
 
         BSTforRBTree<int> bst = new BSTforRBTree<int>();
 
-        
-    
+
+
 
         Color red = new Color();
         red = Color.RED;
@@ -1062,7 +1054,7 @@ public class Program
         {
 
             Console.WriteLine("\nChoose any of those operations: ");
-            Console.WriteLine("\n1 - Print\n2 - blabla \n3 - RB tree print\n4 - TwoThreeFourTreePrint");
+            Console.WriteLine("\n1 - PArt A \n2 - LBH \n3 - RB tree print\n4 - TwoThreeFourTreePrint");
             Console.WriteLine("-----------------");
 
 
@@ -1072,22 +1064,51 @@ public class Program
 
             if (op == "1")
             {
-                Console.WriteLine("// Quadtree");
-                Console.WriteLine("\nIndex 1 : " + index + "\nIndex 2 : " + index2);
+                PointQuadTree quadTree = new PointQuadTree(2); // 2-dimensional space
+                int[] point1 = { 1, 0 }; // 10 is 2 in binary       00 - 0, 01 - 1, 10 - 2, 11 - 3,
+                int[] point2 = { 1, 1 }; //11 is 3 in binary
+
+                int index = quadTree.ComparePoints(point1, point2);
+                int index2 = quadTree.ComparePoints(point2, point1);
+
+                // Print the results
+                Console.WriteLine("// Quadtree Point Comparison Test\n");
+                Console.WriteLine("Point 1: (1, 0), Point 2: (1, 1)\n");
+                Console.WriteLine("Index of Point 1 relative to Point 2: " + index);
+                Console.WriteLine("Index of Point 2 relative to Point 1: " + index2);
 
             }
 
             if (op == "2")
             {
                 Console.WriteLine("\n-------------------------\n");
-                heap.Add(1);
-                heap.Add(2);
-                heap.Add(3);
-                heap.Add(4);
-                heap.Add(5);
-                heap.Print();
-                Console.WriteLine("\n-------------------------\n");
+                // Testing LazyBinomialHeap
+                LazyBinomialHeap<int> heap = new LazyBinomialHeap<int>();
 
+                // Add some elements to the heap
+                heap.Add(10);
+                heap.Add(5);
+                heap.Add(20);
+                heap.Add(15);
+                heap.Add(30);
+
+                // Print the heap
+                Console.WriteLine("Heap after adding elements:");
+                heap.Print();
+
+                // Get the maximum element 
+                Console.WriteLine("\nFront item: " + heap.Front());
+
+                // Remove the maximum element
+                heap.Remove();
+
+                // Print the heap after removal
+                Console.WriteLine("\nHeap after removing maximum element:");
+                heap.Print();
+
+                // Get the new maximum element 
+                Console.WriteLine("\nNew maximum element: " + heap.Front());
+                Console.WriteLine("\n-------------------------\n");
             }
 
 
@@ -1105,7 +1126,8 @@ public class Program
 
             }
 
-            if(op == "4"){
+            if (op == "4")
+            {
                 TwoThreeFourTree<int> tt4t = new TwoThreeFourTree<int>();
                 tt4t.Insert(3);
                 tt4t.Insert(4);
@@ -1118,7 +1140,7 @@ public class Program
                 tt4t.Insert(76);
                 tt4t.Insert(1);
                 tt4t.Insert(2);
-                
+
 
                 tt4t.PrintBTree();
                 // tt4t.Print();
@@ -1126,11 +1148,11 @@ public class Program
                 //converting 2-3-4 tree to a red-black tree
                 // BSTforRBTree<int> redBlackTree = twoThreeFourTree.Convert();
                 // redBlackTree.Print();
-                
+
 
             }
 
-    
+
 
             else if (op == "x")
             {

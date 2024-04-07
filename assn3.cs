@@ -1083,38 +1083,61 @@ public class Program
 
             if (op == "3")
             {
-                // Test TwoThreeFourTree
-                BSTforRBTree<int> bst = new BSTforRBTree<int>();
-                Color red = new Color();
-                red = Color.RED;
-                Color black = new Color();
-                black = Color.BLACK;
+                // // Test TwoThreeFourTree
+                // BSTforRBTree<int> bst = new BSTforRBTree<int>();
+                // Color red = new Color();
+                // red = Color.RED;
+                // Color black = new Color();
+                // black = Color.BLACK;
+
+                // TwoThreeFourTree<int> tt4t = new TwoThreeFourTree<int>();
+                // tt4t.Insert(3);
+                // tt4t.Insert(4);
+                // tt4t.Insert(5);
+                // tt4t.Insert(6);
+                // tt4t.Insert(7);
+                // tt4t.Insert(8);
+                // tt4t.Insert(99);
+                // tt4t.Insert(98);
+                // tt4t.Insert(76);
+                // tt4t.Insert(1);
+                // tt4t.Insert(2);
+
+                // // Convert to RB format
+                // tt4t.Convert();
+
+                // Console.WriteLine("\n2-3-4 Tree format\n");
+
+                // // Print the tree
+                // tt4t.PrintBTree();
+
+                // Console.WriteLine("\nConverting to RB tree format\n");
+                // // Convert 2-3-4 tree to a red-black tree
+                // BSTforRBTree<int> redBlackTree = tt4t.Convert();
+                // redBlackTree.Print();
+
+                //testing use 
+                Console.WriteLine("\nEnter values to insert into TwoThreeFourTree (separated by comma): ");
+                string input = Console.ReadLine();
+                string[] separator = input.Split(',');
 
                 TwoThreeFourTree<int> tt4t = new TwoThreeFourTree<int>();
-                tt4t.Insert(3);
-                tt4t.Insert(4);
-                tt4t.Insert(5);
-                tt4t.Insert(6);
-                tt4t.Insert(7);
-                tt4t.Insert(8);
-                tt4t.Insert(99);
-                tt4t.Insert(98);
-                tt4t.Insert(76);
-                tt4t.Insert(1);
-                tt4t.Insert(2);
-
-                // Convert to RB format
-                tt4t.Convert();
-
-                Console.WriteLine("\n2-3-4 Tree format\n");
+                foreach (string value in separator)
+                {
+                    if (int.TryParse(value, out int intValue))
+                        tt4t.Insert(intValue);
+                }
 
                 // Print the tree
+                Console.WriteLine("\nTwoThreeFourTree:");
                 tt4t.PrintBTree();
 
-                Console.WriteLine("\nConverting to RB tree format\n");
+                Console.WriteLine("\nConverting to RB format\n");
                 // Convert 2-3-4 tree to a red-black tree
                 BSTforRBTree<int> redBlackTree = tt4t.Convert();
                 redBlackTree.Print();
+
+
             }
 
         }

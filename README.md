@@ -1,1 +1,19 @@
 # 3020_Assignment3
+
+### TEAM MEMBERS:
+
+LUKA NIKOLAISVILI
+
+FARZAD IMRAN
+
+FREDERICK NKWONTA
+
+# TEST CASES:
+
+#### list all here
+
+# PART A
+
+# PART B
+
+# PART C

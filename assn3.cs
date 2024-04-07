@@ -1252,18 +1252,36 @@ public class Program
 
             if (op == "1")
             {
+                // PointQuadTree quadTree = new PointQuadTree(2); // 2-dimensional space
+                // int[] point1 = { 1, 0 }; // 10 is 2 in binary       00 - 0, 01 - 1, 10 - 2, 11 - 3,
+                // int[] point2 = { 1, 1 }; //11 is 3 in binary
+
+                // int index = quadTree.ComparePoints(point1, point2);
+                // int index2 = quadTree.ComparePoints(point2, point1);
+
+                // // Print the results
+                // Console.WriteLine("// Quadtree Point Comparison Test\n");
+                // Console.WriteLine("Point 1: (1, 0), Point 2: (1, 1)\n");
+
+                Console.WriteLine("Enter values for Point 1 (in the format x,y):");
+                string[] point1Input = Console.ReadLine().Split(',');
+                int[] point1 = Array.ConvertAll(point1Input, int.Parse);
+
+                Console.WriteLine("Enter values for Point 2 (in the format x,y):");
+                string[] point2Input = Console.ReadLine().Split(',');
+                int[] point2 = Array.ConvertAll(point2Input, int.Parse);
+
                 PointQuadTree quadTree = new PointQuadTree(2); // 2-dimensional space
-                int[] point1 = { 1, 0 }; // 10 is 2 in binary       00 - 0, 01 - 1, 10 - 2, 11 - 3,
-                int[] point2 = { 1, 1 }; //11 is 3 in binary
 
                 int index = quadTree.ComparePoints(point1, point2);
                 int index2 = quadTree.ComparePoints(point2, point1);
 
                 // Print the results
-                Console.WriteLine("// Quadtree Point Comparison Test\n");
-                Console.WriteLine("Point 1: (1, 0), Point 2: (1, 1)\n");
+                Console.WriteLine("\n// Quadtree Point Comparison Test\n");
+                Console.WriteLine($"Point 1: ({point1[0]}, {point1[1]}), Point 2: ({point2[0]}, {point2[1]})\n");
                 Console.WriteLine("Index of Point 1 relative to Point 2: " + index);
                 Console.WriteLine("Index of Point 2 relative to Point 1: " + index2);
+
 
             }
 
@@ -1273,12 +1291,22 @@ public class Program
                 // Testing LazyBinomialHeap
                 LazyBinomialHeap<int> heap = new LazyBinomialHeap<int>();
 
-                // Add some elements to the heap
-                heap.Add(10);
-                heap.Add(5);
-                heap.Add(20);
-                heap.Add(15);
-                heap.Add(30);
+                // // Add some elements to the heap
+                // heap.Add(10);
+                // heap.Add(5);
+                // heap.Add(20);
+                // heap.Add(15);
+                // heap.Add(30);
+
+                Console.WriteLine("Enter values to insert into LazyBinomialHeap (separated by comma): ");
+                string input = Console.ReadLine();
+                string[] separator = input.Split(',');
+
+                foreach (string value in separator)
+                {
+                    if (int.TryParse(value, out int intValue))
+                        heap.Add(intValue);
+                }
 
                 // Print the heap
                 Console.WriteLine("Heap after adding elements:");
@@ -1331,65 +1359,66 @@ public class Program
                         Console.WriteLine("The tree is empty. There are no elements to remove.");
                         break;
                     }
-                    else{
-
-                    
-
-                    Console.WriteLine("\nDo you want to remove something from the tree? (y/n)");
-                    string usercall = Console.ReadLine().ToLower();
-                    if (usercall == "y")
+                    else
                     {
-                        Console.WriteLine("Please Enter the number from the tree you want to remove: ");
-                        
-                        if (int.TryParse(Console.ReadLine(), out int numToDelete))
+
+
+
+                        Console.WriteLine("\nDo you want to remove something from the tree? (y/n)");
+                        string usercall = Console.ReadLine().ToLower();
+                        if (usercall == "y")
                         {
-                            if (tt4t.Search(numToDelete))
+                            Console.WriteLine("Please Enter the number from the tree you want to remove: ");
+
+                            if (int.TryParse(Console.ReadLine(), out int numToDelete))
                             {
-                                tt4t.Delete(numToDelete);
-                                Console.WriteLine("\nAfter deletion:");
-                                tt4t.PrintBTree();
-                                redBlackTree = tt4t.Convert();
-                                Console.WriteLine("RB tree conversion:");
-                                redBlackTree.Print();
+                                if (tt4t.Search(numToDelete))
+                                {
+                                    tt4t.Delete(numToDelete);
+                                    Console.WriteLine("\nAfter deletion:");
+                                    tt4t.PrintBTree();
+                                    redBlackTree = tt4t.Convert();
+                                    Console.WriteLine("RB tree conversion:");
+                                    redBlackTree.Print();
+                                }
+                                else
+                                {
+                                    Console.WriteLine("The number is not in the tree.");
+                                }
                             }
                             else
                             {
-                                Console.WriteLine("The number is not in the tree.");
+                                Console.WriteLine("Invalid number.");
                             }
+                        }
+                        else if (usercall == "n")
+                        {
+                            break;
                         }
                         else
                         {
-                            Console.WriteLine("Invalid number.");
+                            Console.WriteLine("Invalid input. Please enter 'y' or 'n'.");
                         }
                     }
-                    else if (usercall == "n")
+
+                    Console.WriteLine("Please Enter the number from the tree you want to search for: ");
+                    if (int.TryParse(Console.ReadLine(), out int numToSearch))
                     {
-                        break;
+                        bool result = tt4t.Search(numToSearch);
+                        if (result)
+                        {
+                            Console.WriteLine("The key was found within the tree.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("The key was not found within this tree.");
+                        }
                     }
                     else
                     {
-                        Console.WriteLine("Invalid input. Please enter 'y' or 'n'.");
+                        Console.WriteLine("Invalid number.");
                     }
                 }
-                
-                Console.WriteLine("Please Enter the number from the tree you want to search for: ");
-                if (int.TryParse(Console.ReadLine(), out int numToSearch))
-                {
-                    bool result = tt4t.Search(numToSearch);
-                    if (result)
-                    {
-                        Console.WriteLine("The key was found within the tree.");
-                    }
-                    else
-                    {
-                        Console.WriteLine("The key was not found within this tree.");
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("Invalid number.");
-                }
-            }
             }
 
 

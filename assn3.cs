@@ -503,6 +503,12 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
                 // Iterate through each key from left to right
                 for (int i = 0; i < length; i++)
                 {
+                    // See if the key matches, if so stop the insertion
+                    if (keys[i].Equals(k))
+                    {
+                        Console.WriteLine("Key already exists. Insertion cancelled");
+                        return false;
+                    }
                     // If the key is bigger than k
                     if (keys[i].CompareTo(k) > 0)
                     {
@@ -604,81 +610,142 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
     // Returns true if key k is successfully deleted; false otherwise. (10 marks)
     public bool Delete(T k)
     {
-        // Check if the tree is empty
+        // if the root is null return false
         if (root == null)
         {
             return false;
         }
-        //using the recursion calling the Delete method 
+        // recursivly call helper method, starting at the root
         bool deleted = Delete(root, k);
-
-        // checking If the root is empty after deletion, make its first child the new root
-        if (deleted && root.getKey().All(key => key == null))
-        {
-            root = root.getChildren()[0];
-        }
-        //true or false if everything went smooth true otherwise false
+        // return the result of the deletion
         return deleted;
     }
 
-    //this is the method I will use for the recursion call in the public method
     private bool Delete(Node<T> node, T k)
-    {   //checking if the node is null
+    {
         if (node == null)
-        {   //then I will return false
+        {
             return false;
         }
-        //initializing and populating the T keys with node keys
+
         T[] keys = node.getKey();
-        //then children nodes with the getchildren method 
         Node<T>[] children = node.getChildren();
-        //for the loop I will initialize it outside I will need this in other parts as well
         int i = 0;
-        //while loop will go through the conditions and check if the index is less then size of the keys, and we will check if any of them are not null 
+
         while (i < node.getKeyNum() && keys[i] != null && keys[i].CompareTo(k) < 0)
-        {   //then we will increment
+        {
             i++;
         }
 
-        // If the key is found in the current node
         if (i < node.getKeyNum() && keys[i] != null && keys[i].CompareTo(k) == 0)
         {
-            // If the node is a leaf, simply remove the key
-            if (node.checkLeaf())
-            {   //we will remove the key at index i
-                node.removeKey(i);
-                //and will return true
-                return true;
-            }
-            //otherwise
-            else
+            node.removeKey(i);
+            return true;
+        }
+        else if (!node.checkLeaf())
+        {
+            Node<T> child = children[i];
+            Node<T> childLeft = children[i - 1];
+            Node<T> childRight = children[i + 1];
+            T[] keysR = childRight.getKey();
+            T[] keysL = childLeft.getKey();
+
+            int childKeyNum = child.getKeyNum();
+            bool childDeleted = Delete(child, k);
+
+            if (!childDeleted)
             {
-                // If the node is internal, find the predecessor (or successor) so next of previous node
-                Node<T> child = children[i];
-                //checking the condition if the index is not null
-                if (child.getKey()[0] != null)
-                {   //then we will call the find max function and pass the child index
-                    T predecessor = FindMax(child);
-                    //we will addkey at the index of the i predecesor
-                    node.addKey(predecessor);
-                    //we will call the recursive call for the delete method
-                    return Delete(child, predecessor);
+                if (childKeyNum < 2)
+                {
+                    if (childRight != null && childRight.getKeyNum() > 1)
+                    {
+                        // Borrow a key from the right sibling
+                        T borrowedKey = keysR[0];
+                        childRight.removeKey(0);
+                        node.addKey(borrowedKey);
+                        child.addKey(keys[i]);
+                        return true;
+                    }
+                    else if (childLeft != null && childLeft.getKeyNum() > 1)
+                    {
+                        // Borrow a key from the left sibling
+                        int keyindex = childLeft.getKeyNum() - 1;
+                        T borrowedKey = keysL[keyindex];
+                        childLeft.removeKey(keyindex);
+                        node.addKey(keys[i - 1]);
+                        keys[i - 1] = borrowedKey;
+                        return true;
+                    }
+                    else if (childRight != null)
+                    {
+                        // Merge with right sibling
+                        Merge(node, i);
+                    }
+                    else if (childLeft != null)
+                    {
+                        // Merge with left sibling
+                        Merge(node, i - 1);
+                    }
                 }
             }
         }
-        // we will check if its not a leaf node
-        else if (!node.checkLeaf())
-        {
-            // Recurse to the correct child
-            return Delete(children[i], k);
-        }
-        //we will return false
         return false;
     }
 
-    //FIndmax function 
+
+    // Private method for Merge, merges right child into left
+    private void Merge(Node<T> x, int i)
+    {
+        Node<T>[] children = x.getChildren();
+        // if the right child would be out of bounds, move index left
+        if (i + 1 <= children.Length)
+        {
+            i--;
+        }
+        Node<T> left = children[i];
+        Node<T> right = children[i + 1];
+        T[] keys = x.getKey();
+        T[] keysR = right.getKey();
+        int rightNum = right.getKeyNum();
+        int leftnum = left.getKeyNum();
+
+
+        // Add the key from node x at index i to the left node
+        left.addKey(keys[i]);
+
+        // Move keys from the right node to the left node
+        for (int j = 0; j < rightNum; j++)
+        {
+            left.addKey(keysR[j]);
+        }
+
+        // If the right node is not a leaf, move its children to the left node
+        if (!right.checkLeaf())
+        {
+            for (int j = 0; j < rightNum; j++)
+            {
+                left.addChild(leftnum, right.getChildren()[j]);
+            }
+        }
+
+        // Remove the key from node x at index i
+        x.removeKey(i);
+
+        // Remove the right node from x
+        x.removeChild(i + 1);
+    }
+
+
+
+
+
+    //Findmax function 
     private T FindMax(Node<T> node)
     {
+        if (node == null)
+        {
+            return default;
+        }
         //checking if the node is not the leaf node
         while (!node.checkLeaf())
         {   //then the node will be assigned getChildren()[node.getChildren().Length - 1];
@@ -1134,60 +1201,64 @@ public class Program
                 // // Convert 2-3-4 tree to a red-black tree
                 // BSTforRBTree<int> redBlackTree = tt4t.Convert();
                 // redBlackTree.Print();
-                 BSTforRBTree<int> redBlackTree;
-               Console.WriteLine("\nEnter values to insert into TwoThreeFourTree (separated by comma): ");
+
+                BSTforRBTree<int> redBlackTree;
+                Console.WriteLine("\nEnter values to insert into TwoThreeFourTree (separated by comma): ");
                 string input = Console.ReadLine();
                 string[] separator = input.Split(',');
+                int[] inputArray = new int[separator.Length];
+                int i = 0;
 
                 TwoThreeFourTree<int> tt4t = new TwoThreeFourTree<int>();
                 foreach (string value in separator)
                 {
                     if (int.TryParse(value, out int intValue))
-                        tt4t.Insert(intValue);
+                    {
+                        inputArray[i] = intValue;
+                    }
+                    i++;
                 }
-                
-                // Print the tree
-                Console.WriteLine("\nTwoThreeFourTree:");
-                
-                tt4t.PrintBTree();
-                Console.WriteLine("Do you want to remove something fromg the tree?");
-                String usercall = Console.ReadLine();
-                if(usercall == "Y".ToLower()){
-                    Console.WriteLine("Please Enter the number from the tree you want to remove: ");
-                     string numTodelete = Console.ReadLine();
-                     Console.WriteLine();
-                     int.TryParse(numTodelete, out int StringToNum);
-                    tt4t.Delete(StringToNum);
-                     tt4t.PrintBTree();
-                    redBlackTree = tt4t.Convert();
-                    Console.WriteLine("This is the RB tree conversion:\n");
-                    redBlackTree.Print();
-                }
-                else if(usercall == "N".ToLower()){
-                    return;
+                for (i = 0; i < inputArray.Length; i++)
+                {
+                    tt4t.Insert(inputArray[i]);
                 }
 
-                else{
-                    Console.WriteLine("you have to enter N to exit");
-                     usercall = Console.ReadLine();
-                     if(usercall == "N".ToLower()){
-                        return;
-                     }
-                     else{
-                        while(usercall!="N".ToLower()){
-                         Console.WriteLine("you have to enter N to exit");
-                        usercall = Console.ReadLine();
-                        }
-                     }
-                     
-                }
-               
-                
-               
-                Console.WriteLine("\nConverting to RB format\n");
-                // Convert 2-3-4 tree to a red-black tree
+                // Print the tree
+                Console.WriteLine("\nTwoThreeFourTree:");
+
+                tt4t.PrintBTree();
+
+                Console.WriteLine("\nRBTree:");
                 redBlackTree = tt4t.Convert();
                 redBlackTree.Print();
+
+                Console.WriteLine();
+                Console.WriteLine("Do you want to remove something from the tree? (y or n)");
+                String usercall = Console.ReadLine();
+                while (usercall != null)
+                {
+                    if (usercall == "Y".ToLower() || usercall == "y")
+                    {
+                        Console.WriteLine("Please Enter the number from the tree you want to remove: ");
+                        string numTodelete = Console.ReadLine();
+                        Console.WriteLine();
+                        int.TryParse(numTodelete, out int StringToNum);
+                        tt4t.Delete(StringToNum);
+                        tt4t.PrintBTree();
+                        redBlackTree = tt4t.Convert();
+                        Console.WriteLine("This is the RB tree conversion:\n");
+                        redBlackTree.Print();
+                    }
+                    else if (usercall == "n".ToUpper() || usercall == "N")
+                    {
+                        return;
+                    }
+
+                    else
+                    {
+                        Console.WriteLine("Please enter 'Y' or 'N'. ");
+                    }
+                }
 
             }
 

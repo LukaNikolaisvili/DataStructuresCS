@@ -304,6 +304,19 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
             return leaf;
         }
 
+        public void setLeaf(int check)
+        {
+             if (check == 0)
+            {
+                leaf = true;
+            }
+            // if the passed value is 1, decrement number of keys
+            else if (check == 1)
+            {
+                leaf = false;
+            }
+        }
+
         // Public method to get child node references
         public Node<T>[] getChildren()
         {
@@ -328,6 +341,7 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
                 }
             }
             // Now insert the value at the index
+            setLeaf(1);
             c[index] = child;
             return;
         }
@@ -447,6 +461,13 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
             // update index based on new keys array
             index = p.getKeyNum();
 
+            children = p.getChildren();
+
+            if (children.Length <= 0)
+            {
+                p.setLeaf(0);
+            }
+
             // Check if the current node is a leaf node
             // Insert here!
             if (p.checkLeaf() == true)
@@ -525,6 +546,7 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
                     {
                         // Set child index to the current key index (The child left of the key!)
                         childindex = i;
+                        index = children[childindex].getKeyNum();
                         // If child is full, split
                         if (index >= max)
                         {
@@ -541,7 +563,7 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
                     else if (keys[i].CompareTo(k) < 0)
                     {
                         // Check if the next key exists
-                        if (keys[i + 1] != null)
+                        if (i + 1 < index)
                         {
                             // If it does check if the next key is greater than k
                             // If it isn't, the loop will simply go to the next iteration
@@ -550,6 +572,7 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
                             {
                                 // Set child index to i+1 (the child right of the current key!)
                                 childindex = i + 1;
+                                index = children[childindex].getKeyNum();
                                 // If child is full, split
                                 if (index >= max)
                                 {
@@ -568,6 +591,7 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
                         {
                             // Set child index to i+1 (the child right of the current key!)
                             childindex = i + 1;
+                            index = children[childindex].getKeyNum();
                             // If child is full, split
                             if (index >= max)
                             {

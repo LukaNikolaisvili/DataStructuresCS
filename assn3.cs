@@ -778,50 +778,50 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
     }
 
     //needed for the recursive calls
-   private void ConvertToRBTree(Node<T> node, BSTforRBTree<T> rbTree, Color parentColor = Color.BLACK)
-{
-    if (node == null)
+    private void ConvertToRBTree(Node<T> node, BSTforRBTree<T> rbTree, Color parentColor = Color.BLACK)
     {
-        return;
-    }
-
-    // Determine the color of the current node based on the parent's color
-    Color currentNodeColor;
-    if (parentColor == Color.BLACK && node != root)
-    {
-        currentNodeColor = Color.RED;
-    }
-    else
-    {
-        currentNodeColor = Color.BLACK;
-    }
-
-    // In-order traversal to maintain the sorted order
-    if (node.getChildren().Length > 0 && node.getChildren()[0] != null)
-    {
-        ConvertToRBTree(node.getChildren()[0], rbTree, currentNodeColor);
-    }
-
-    for (int i = 0; i < node.getKeyNum(); i++)
-    {
-        if (node.getKey()[i] != null)
+        if (node == null)
         {
-            // Insert the current node with the determined color
-            rbTree.Add(node.getKey()[i], currentNodeColor);
+            return;
+        }
 
-            if (i < node.getChildren().Length - 1 && node.getChildren()[i + 1] != null)
+        // Determine the color of the current node based on the parent's color
+        Color currentNodeColor;
+        if (parentColor == Color.BLACK && node != root)
+        {
+            currentNodeColor = Color.RED;
+        }
+        else
+        {
+            currentNodeColor = Color.BLACK;
+        }
+
+        // In-order traversal to maintain the sorted order
+        if (node.getChildren().Length > 0 && node.getChildren()[0] != null)
+        {
+            ConvertToRBTree(node.getChildren()[0], rbTree, currentNodeColor);
+        }
+
+        for (int i = 0; i < node.getKeyNum(); i++)
+        {
+            if (node.getKey()[i] != null)
             {
-                ConvertToRBTree(node.getChildren()[i + 1], rbTree, currentNodeColor);
+                // Insert the current node with the determined color
+                rbTree.Add(node.getKey()[i], currentNodeColor);
+
+                if (i < node.getChildren().Length - 1 && node.getChildren()[i + 1] != null)
+                {
+                    ConvertToRBTree(node.getChildren()[i + 1], rbTree, currentNodeColor);
+                }
             }
         }
-    }
 
-    // Handle the rightmost child
-    if (node.getKey().Length < node.getChildren().Length && node.getChildren()[node.getKey().Length] != null)
-    {
-        ConvertToRBTree(node.getChildren()[node.getKey().Length], rbTree, currentNodeColor);
+        // Handle the rightmost child
+        if (node.getKey().Length < node.getChildren().Length && node.getChildren()[node.getKey().Length] != null)
+        {
+            ConvertToRBTree(node.getChildren()[node.getKey().Length], rbTree, currentNodeColor);
+        }
     }
-}
 
 
 
@@ -1097,7 +1097,7 @@ public class Program
                 tt4t.Insert(76);
                 tt4t.Insert(1);
                 tt4t.Insert(2);
-                
+
                 tt4t.Convert();
 
                 tt4t.PrintBTree();

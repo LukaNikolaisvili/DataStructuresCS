@@ -621,46 +621,72 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
         return deleted;
     }
 
+    // Helper function for Delete to call recursively and go down the tree
     private bool Delete(Node<T> node, T k)
     {
+        // if the root is null return false
         if (node == null)
         {
             return false;
         }
 
+        // Store the keys of the current node in the keys array
         T[] keys = node.getKey();
+        // Store the children of the current node
         Node<T>[] children = node.getChildren();
+
+        // Incremental index
         int i = 0;
 
+        // If index is in bounds, not null, and less than k 
         while (i < node.getKeyNum() && keys[i] != null && keys[i].CompareTo(k) < 0)
         {
+            // increment the index up until it isn't
             i++;
         }
 
+        // If the index is in bounds, not null, and equal to k
         if (i < node.getKeyNum() && keys[i] != null && keys[i].CompareTo(k) == 0)
         {
+            // remove the key and return true
             node.removeKey(i);
             return true;
         }
+
+        // Otherwise check if the curren node is not a leaf node
         else if (!node.checkLeaf())
         {
+            // Set the child of the current node to the entry at the index
             Node<T> child = children[i];
-            if (i-1 < 0)
-            {
-                i = 1;
-            }
+            // If left child is out of bounds (i = 0), move the index up to 1.
+            // This will set the left child as the current child as well!
+
+            // Get the left child of current node, and Right child of current node based on i
             Node<T> childLeft = children[i - 1];
+            if (childLeft == null)
+            {
+                childLeft = child;
+            }
             Node<T> childRight = children[i + 1];
+            if (childRight == null)
+            {
+                childRight = child;
+            }
+
+            // Get the key arrays
             T[] keysR = childRight.getKey();
             T[] keysL = childLeft.getKey();
-
+            // Get the number of keys in the current child
             int childKeyNum = child.getKeyNum();
             bool childDeleted = Delete(child, k);
 
+            // If child wasn't deleted
             if (!childDeleted)
             {
+                // Check if the number of keys is less than t (2)
                 if (childKeyNum < 2)
                 {
+                    // If right sibling isn't null and has more than 2 keys
                     if (childRight != null && childRight.getKeyNum() > 1)
                     {
                         // Borrow a key from the right sibling
@@ -670,6 +696,7 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
                         child.addKey(keys[i]);
                         return true;
                     }
+                    // Otherwise look towards the left sibling
                     else if (childLeft != null && childLeft.getKeyNum() > 1)
                     {
                         // Borrow a key from the left sibling
@@ -680,11 +707,13 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
                         keys[i - 1] = borrowedKey;
                         return true;
                     }
+                    // If the right sibling isn't null and doesnn't have enough keys
                     else if (childRight != null)
                     {
                         // Merge with right sibling
                         Merge(node, i);
                     }
+                    // If the left sibling isn't null and doesnn't have enough keys
                     else if (childLeft != null)
                     {
                         // Merge with left sibling
@@ -706,10 +735,14 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
         {
             i--;
         }
+        // Store the siblings
         Node<T> left = children[i];
         Node<T> right = children[i + 1];
+        // Store the current keys
         T[] keys = x.getKey();
+        // Store keys of right sibling
         T[] keysR = right.getKey();
+        // Store the number of keys in left and right
         int rightNum = right.getKeyNum();
         int leftnum = left.getKeyNum();
 
@@ -744,83 +777,161 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
     {
         // Set the current node as the root node
         Node<T> current = root;
+        // Set the parent node also as the root node
+        Node<T> parent = root;
         // Array that will hold the children which will be updated as code progresses
         Node<T>[] children;
+        // Index to hold what child to go down!
+        int childindex = 0;
+        // index to hold number of children
+        int numchildren = 0;
+        // Maximum number of keys
+        int max = 3;
 
         while (current != null) // Recursion without a recursive call
         {
+            Node<T> check = current;
             // Get the array of keys from the current node
+            // Array that will hold the keys which will be updated as code progresses
             T[] keys = current.getKey();
 
+            // update index based on new keys array
+            int index = current.getKeyNum();
 
-            // For every key in the array,
-            foreach (T key in keys)
+            // Update the array of keys
+            children = current.getChildren();
+
+            for (int j = 0; j < 4; j++)
             {
-                // See if the key matches, if so return true!
-                if (key.Equals(k))
+                if (children[j] != null)
                 {
-                    return true; // Key found
+                    numchildren++;
                 }
             }
 
-            // By reaching this point it means the keys did not match
-            // Check if the current node is a leaf node, if so, return false.
-            if (current.checkLeaf() == true)
+            // Iterate through each key from left to right
+            for (int i = 0; i < index; i++)
             {
-                return false;
-            }
-            // If it's not a leaf node proceed to the correct child subtree!
-            else
-            {
-                // Get the array of children
-                children = current.getChildren();
-                // Get the amount of children from the array
-                int length = children.Length;
-
-                // Iterate through each key from left to right
-                for (int i = 0; i < length; i++)
+                // See if the key matches, if so stop the search
+                if (keys[i].Equals(k))
                 {
-                    // If the key is bigger than k
-                    if (keys[i].CompareTo(k) > 0)
+                    return true;
+                }
+                // If the key is bigger than k
+                if (keys[i].CompareTo(k) > 0)
+                {
+                    // Set child index to the current key index (The child left of the key!)
+                    childindex = i;
+                    if (children[childindex] == null)
                     {
-                        // Go to the child before the key
-                        current = children[i];
-                        // Break the loop and start over from the top!
+                        // No child here, so no key. So break out
                         break;
                     }
-                    // Otherwise if the key is less than k
-                    else if (keys[i].CompareTo(k) < 0)
+                    // Set parent as the current node
+                    parent = current;
+                    // Proceed to the child
+                    current = children[childindex];
+                    // Break the loop and start over from the top!
+                    break;
+                }
+                // Otherwise if the key is less than k
+                else if (keys[i].CompareTo(k) < 0)
+                {
+                    // Check if the next key exists
+                    if (i + 1 < index)
                     {
-                        // Check if the next key exists
-                        if (keys[i + 1] != null)
+                        // If it does check if the next key is greater than k
+                        // If it isn't, the loop will simply go to the next iteration
+                        // No additional code needed for that.
+                        if (keys[i + 1].CompareTo(k) > 0)
                         {
-                            // If it does check if the next key is greater than k
-                            // If it isn't, the loop will simply go to the next iteration
-                            // No additional code needed for that.
-                            if (keys[i + 1].CompareTo(k) > 0)
+                            // Set child index to i+1 (the child right of the current key!)
+                            childindex = i + 1;
+                            if (children[childindex] == null)
                             {
-                                // if it is move to the next child
-                                current = children[i + 1];
-                                // break out of the loop and start from the top
+                                // No child here, so no key. So break out
                                 break;
                             }
-                        }
-                        // If there is no next key, go to the rightmost child
-                        else
-                        {
-                            current = children[i + 1];
-                            // break the loop and start from the top
+                            index = children[childindex].getKeyNum();
+                            // Set parent as the current node
+                            parent = current;
+                            // Then move to the next child
+                            current = children[childindex];
+                            // break out of the loop and start from the top
                             break;
                         }
                     }
+                    // If there is no next key, go to the rightmost child
+                    else
+                    {
+                        // Set child index to i+1 (the child right of the current key!)
+                        childindex = i + 1;
+                        if (childindex >= max)
+                        {
+                            // Make sure child is in bounds
+                            childindex = 3;
+                        }
+                        if (children[childindex] == null)
+                        {
+                            // No child here, so no key. So break out
+                            break;
+                        }
+                        index = children[childindex].getKeyNum();
+                        // Set the parent node as the current node
+                        parent = current;
+                        // Then set the current node as the rightmost child
+                        current = children[childindex];
+                        // break the loop and start from the top
+                        break;
+                    }
+                }
+            }
+            // If we're in a leaf node, and we haven't found the key
+            if (check.checkLeaf())
+            {
+                // Get the children of the parent node again
+                children = parent.getChildren();
+                // Get number of children
+                numchildren = 0;
+                for (int j = 0; j < 4; j++)
+                {
+                    if (children[j] != null)
+                    {
+                        numchildren++;
+                    }
+                }
+                // Search for the index of the current child
+                for (int i = 0; i < 4; i++)
+                {
+                    // Once we find it, store it and break out
+                    if (children[i] == current)
+                    {
+                        childindex = i;
+                        break;
+                    }
+                    else
+                    {
+                        // set child index to out of bounds until otherwise.
+                        childindex = 5;
+                    }
+                }
+                // Now based on what the childindex variable is, in bounds or out of bounds
+                if (childindex < numchildren)
+                {
+                    // Go down the next sibling
+                    current = children[childindex+1];
+                }
+                else
+                {
+                    // No more siblings, no keys found, finally return false.
+                    return false;
                 }
             }
         }
-
-        // Some error occurred in the logic
-        // Return false
+        // No result, return false
         return false;
     }
+
 
 
     // Builds and returns the equivalent red-black tree. (8 marks)
@@ -853,7 +964,7 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
 
         // Store the children array
         Node<T>[] children = current.getChildren();
-        int childindex = children.Length -1;
+        int childindex = children.Length - 1;
 
         // For every integer up until the last child
         for (int i = 0; i < childindex; i++)
@@ -1216,7 +1327,7 @@ public class Program
                 String usercall = Console.ReadLine();
                 while (usercall != null)
                 {
-                    if (usercall == "Y".ToLower() || usercall == "y")
+                    if (usercall == "Y".ToLower())
                     {
                         Console.WriteLine("Please Enter the number from the tree you want to remove: ");
                         string numTodelete = Console.ReadLine();
@@ -1228,15 +1339,30 @@ public class Program
                         Console.WriteLine("This is the RB tree conversion:\n");
                         redBlackTree.Print();
                     }
-                    else if (usercall == "n".ToUpper() || usercall == "N")
+                    else if (usercall == "N".ToLower())
                     {
-                        return;
+                        break;
                     }
 
                     else
                     {
                         Console.WriteLine("Please enter 'Y' or 'N'. ");
                     }
+                    Console.WriteLine("Do you want to remove something from the tree? (y or n)");
+                    usercall = Console.ReadLine();
+                }
+                Console.WriteLine("Please Enter the number from the tree you want to search for: ");
+                string numToSearch = Console.ReadLine();
+                Console.WriteLine();
+                int.TryParse(numToSearch, out int StringToNum2);
+                bool result = tt4t.Search(StringToNum2);
+                if (result)
+                {
+                    Console.WriteLine("The key was found within the tree");
+                }
+                else
+                {
+                    Console.WriteLine("The key was not found within this tree.");
                 }
 
             }

@@ -878,10 +878,9 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
         {
             return;
         }
-        // Store the number of keys
-        int numkeys = current.getKeyNum();
         // Store the key array
         T[] keyitems = current.getKey();
+
         // Store the children array
         Node<T>[] children = current.getChildren();
         int childindex = children.Length -1;
@@ -891,7 +890,11 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
         {
             // perform an in-order traversal and then add the keys to the list on return.
             InOrderTraversal(children[i], keys);
-            keys.Add(keyitems[i]);
+            // Only add to keys array if the value is not default!
+            if (keyitems[i].CompareTo(default(T)) != 0)
+            {
+                keys.Add(keyitems[i]);
+            }
         }
         // Perform a last in-order traversal on the last child
         InOrderTraversal(children[childindex], keys);

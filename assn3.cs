@@ -776,37 +776,50 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
     }
 
     //needed for the recursive calls
-    private void ConvertToRBTree(Node<T> node, BSTforRBTree<T> rbTree)
+    private void ConvertToRBTree(Node<T> node, BSTforRBTree<T> rbTree, int depth = 0)
+{
+    if (node == null)
     {
-        if (node == null)
-        {
-            return;
-        }
+        return;
+    }
 
-        // In-order traversal to maintain the sorted order
-        if (node.getChildren().Length > 0 && node.getChildren()[0] != null)
-        {
-            ConvertToRBTree(node.getChildren()[0], rbTree);
-        }
+    // In-order traversal to maintain the sorted order
+    if (node.getChildren().Length > 0 && node.getChildren()[0] != null)
+    {
+        ConvertToRBTree(node.getChildren()[0], rbTree, depth + 1);
+    }
 
-        for (int i = 0; i < node.getKey().Length; i++)
+    for (int i = 0; i < node.getKey().Length; i++)
+    {
+        if (node.getKey()[i] != null)
         {
-            if (node.getKey()[i] != null)
+            Color color;
+            if (depth % 2 == 0)
             {
-                // Assuming all nodes are black in the resultant RB tree for simplicity
-                rbTree.Add(node.getKey()[i], Color.BLACK);
-                if (i < node.getChildren().Length - 1 && node.getChildren()[i + 1] != null)
-                {
-                    ConvertToRBTree(node.getChildren()[i + 1], rbTree);
-                }
+                color = Color.BLACK;  // Black for even levels
+            }
+            else
+            {
+                color = Color.RED;  // Red for odd levels
+            }
+
+            rbTree.Add(node.getKey()[i], color);
+
+            if (i < node.getChildren().Length - 1 && node.getChildren()[i + 1] != null)
+            {
+                ConvertToRBTree(node.getChildren()[i + 1], rbTree, depth + 1);
             }
         }
-
-        if (node.getKey().Length < node.getChildren().Length && node.getChildren()[node.getKey().Length] != null)
-        {
-            ConvertToRBTree(node.getChildren()[node.getKey().Length], rbTree);
-        }
     }
+
+    // Handle the rightmost child
+    if (node.getKey().Length < node.getChildren().Length && node.getChildren()[node.getKey().Length] != null)
+    {
+        ConvertToRBTree(node.getChildren()[node.getKey().Length], rbTree, depth + 1);
+    }
+}
+
+
 
     // Prints out the keys of the 2-3-4 tree in order. (4 marks)
 
@@ -1146,7 +1159,7 @@ public class Program
                 // tt4t.Print();
                 TwoThreeFourTree<int> twoThreeFourTree = new TwoThreeFourTree<int>();
                 //converting 2-3-4 tree to a red-black tree
-                BSTforRBTree<int> redBlackTree = twoThreeFourTree.Convert();
+                BSTforRBTree<int> redBlackTree = tt4t.Convert();
                 redBlackTree.Print();
                 
 

@@ -1134,7 +1134,7 @@ public class Program
                 // // Convert 2-3-4 tree to a red-black tree
                 // BSTforRBTree<int> redBlackTree = tt4t.Convert();
                 // redBlackTree.Print();
-
+                 BSTforRBTree<int> redBlackTree;
                Console.WriteLine("\nEnter values to insert into TwoThreeFourTree (separated by comma): ");
                 string input = Console.ReadLine();
                 string[] separator = input.Split(',');
@@ -1145,14 +1145,48 @@ public class Program
                     if (int.TryParse(value, out int intValue))
                         tt4t.Insert(intValue);
                 }
-
+                
                 // Print the tree
                 Console.WriteLine("\nTwoThreeFourTree:");
+                
                 tt4t.PrintBTree();
+                Console.WriteLine("Do you want to remove something fromg the tree?");
+                String usercall = Console.ReadLine();
+                if(usercall == "Y".ToLower()){
+                    Console.WriteLine("Please Enter the number from the tree you want to remove: ");
+                     string numTodelete = Console.ReadLine();
+                     Console.WriteLine();
+                     int.TryParse(numTodelete, out int StringToNum);
+                    tt4t.Delete(StringToNum);
+                     tt4t.PrintBTree();
+                    redBlackTree = tt4t.Convert();
+                    Console.WriteLine("This is the RB tree conversion:\n");
+                    redBlackTree.Print();
+                }
+                else if(usercall == "N".ToLower()){
+                    return;
+                }
 
+                else{
+                    Console.WriteLine("you have to enter N to exit");
+                     usercall = Console.ReadLine();
+                     if(usercall == "N".ToLower()){
+                        return;
+                     }
+                     else{
+                        while(usercall!="N".ToLower()){
+                         Console.WriteLine("you have to enter N to exit");
+                        usercall = Console.ReadLine();
+                        }
+                     }
+                     
+                }
+               
+                
+               
                 Console.WriteLine("\nConverting to RB format\n");
                 // Convert 2-3-4 tree to a red-black tree
-                BSTforRBTree<int> redBlackTree = tt4t.Convert();
+                redBlackTree = tt4t.Convert();
                 redBlackTree.Print();
 
             }

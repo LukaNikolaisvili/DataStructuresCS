@@ -247,32 +247,34 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
         }
 
         // Public add method for the key array
-        public void addKey(int index, U value)
+        public void addKey(U value)
         {
-            // Error statement if index is out of bounds
-            if (index >= 3 || index < 0)
-            {
-                throw new IndexOutOfRangeException("index out of bounds");
-            }
-            if (n >= 3)
+            int numkeys = getKeyNum();
+            if (numkeys >= 3)
             {
                 throw new IndexOutOfRangeException("Cannot insert, the node is full");
             }
-            // if the key at the current index slot is full, shift to the right
-            if (key[index] != null)
+
+            // Find the correct position to insert the new key while maintaining ascending order
+            int insertIndex = 0;
+            while (insertIndex < numkeys && key[insertIndex] != null && key[insertIndex].CompareTo(value) < 0)
             {
-                // Shift each key right until index
-                for (int i = 2; i > index; i--)
-                {
-                    key[i] = key[i - 1];
-                }
+                insertIndex++;
             }
-            // Now insert the value at the index
-            key[index] = value;
-            // increment number of keys
+
+            // Shift keys to make space for the new key
+            for (int i = n; i > insertIndex; i--)
+            {
+                key[i] = key[i - 1];
+            }
+
+            // Insert the new key at the correct position
+            key[insertIndex] = value;
+
+            // Increment number of keys
             updateKeyNum(0);
-            return;
         }
+
         // Public remove method for the key array
         public void removeKey(int index)
         {
@@ -303,14 +305,15 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
         {
             return leaf;
         }
-
+        // Public setter method for leaf variable, 0 for leaf node, 1 for non-leaf
         public void setLeaf(int check)
         {
+            // if the passed value is 0, set parameter to true
             if (check == 0)
             {
                 leaf = true;
             }
-            // if the passed value is 1, decrement number of keys
+            // if the passed value is 1, set parameter to false
             else if (check == 1)
             {
                 leaf = false;
@@ -386,7 +389,7 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
         T value = keys[2];          // Get the last key from the array
 
         // Move the last key of p into q
-        q.addKey(0, value);
+        q.addKey(value);
         // Remove the last key of p
         p.removeKey(2);
 
@@ -401,8 +404,8 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
             }
         }
 
-        // Insert the middle key from p to x at position i
-        x.addKey(i, keys[1]);
+        // Insert the median key from p to x at position i
+        x.addKey(keys[1]);
         p.removeKey(1);
 
         // Add reference to node q as the child at i+1 (to the right of p)
@@ -461,13 +464,6 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
             // update index based on new keys array
             index = p.getKeyNum();
 
-            children = p.getChildren();
-
-            if (children.Length <= 0)
-            {
-                p.setLeaf(0);
-            }
-
             // Check if the current node is a leaf node
             // Insert here!
             if (p.checkLeaf() == true)
@@ -488,55 +484,21 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
                 {
                     // split the node
                     Split(parent, childindex);
-                }
-                // update the insertion index 
-                index = p.getKeyNum();
-                keys = p.getKey();
-                int insertindex = 0;
-                for (int j = 0; j < index; j++)
-                {
-                    // if k is less than key at index j
-                    if (keys[j].CompareTo(k) > 0)
-                    {
-                        // insert at index j and exit out of the loop
-                        insertindex = j;
-                        break;
-                    }
-                    // Otherwise if the key is smaller than k
-                    else if (keys[j].CompareTo(k) < 0)
-                    {
-                        // if the current key is at index 0, check for neighbour
-                        // if you are index 1, you cannot have a neighbour or the node is full
-                        if (j + 1 == 1)
-                        {
-                            // make sure k is less than the neighbouring key
-                            if (keys[j + 1].CompareTo(k) > 0)
-                            {
-                                // if so insert at j+1
-                                insertindex = j + 1;
-                                break;
-                            }
-                            // Otherwise loop will continue to next iteration
-                        }
-                        else
-                        {
-                            // Insert at the next index if no neighbour
-                            insertindex = j + 1;
-                            break;
-                        }
-                    }
+                    // Set the current node back as the parent so insertions can properly occur
+                    p = parent;
+                    break;
                 }
                 // Add the key to the correct slot and return true.
-                p.addKey(insertindex, k);
+                p.addKey(k);
                 return true;
             }
             // If it's not a leaf node proceed to the correct child subtree!
             else
             {
-                // Update the array of children
+                // Update the array of keys
                 children = p.getChildren();
-                // Get the amount of children from the array
-                int length = children.Length;
+                // Get the amount of keys from the array
+                int length = p.getKeyNum();
 
                 // Iterate through each key from left to right
                 for (int i = 0; i < length; i++)
@@ -546,11 +508,17 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
                     {
                         // Set child index to the current key index (The child left of the key!)
                         childindex = i;
+                        if (children[childindex] == null)
+                        {
+                            p.addChild(childindex, new Node<T>(2));
+                        }
                         index = children[childindex].getKeyNum();
                         // If child is full, split
                         if (index >= max)
                         {
                             Split(p, childindex);
+                            p = root;
+                            break; // Set p back to the root and traverse down again to ensure proper key insertions
                         }
                         // Set parent as the current node
                         parent = p;
@@ -572,11 +540,19 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
                             {
                                 // Set child index to i+1 (the child right of the current key!)
                                 childindex = i + 1;
+                                if (children[childindex] == null)
+                                {
+                                    // Add a child if one does not exist at the location!
+                                    p.addChild(childindex, new Node<T>(2));
+                                }
                                 index = children[childindex].getKeyNum();
                                 // If child is full, split
                                 if (index >= max)
                                 {
+                                    // Split and return back to root.
                                     Split(p, childindex);
+                                    p = root;
+                                    break;
                                 }
                                 // Set parent as the current node
                                 parent = p;
@@ -591,11 +567,24 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
                         {
                             // Set child index to i+1 (the child right of the current key!)
                             childindex = i + 1;
+                            if (childindex >= max)
+                            {
+                                // Make sure child is in bounds
+                                childindex = 3;
+                            }
+                            if (children[childindex] == null)
+                            {
+                                // Add a child if one does not exist at the location!
+                                p.addChild(childindex, new Node<T>(2));
+                            }
                             index = children[childindex].getKeyNum();
                             // If child is full, split
                             if (index >= max)
                             {
+                                // Split and return back to root.
                                 Split(p, childindex);
+                                p = root;
+                                break;
                             }
                             // Set the parent node as the current node
                             parent = p;
@@ -671,7 +660,7 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
                 {   //then we will call the find max function and pass the child index
                     T predecessor = FindMax(child);
                     //we will addkey at the index of the i predecesor
-                    node.addKey(i, predecessor);
+                    node.addKey(predecessor);
                     //we will call the recursive call for the delete method
                     return Delete(child, predecessor);
                 }
@@ -793,59 +782,97 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
     }
 
 
-
+    // Builds and returns the equivalent red-black tree. (8 marks)
     public BSTforRBTree<T> Convert()
     {
+        // Create new Red Black Tree structure
         BSTforRBTree<T> rbTree = new BSTforRBTree<T>();
-        ConvertToRBTree(root, rbTree);
+        // Create a list to hold all keys in order.
+        List<T> keys = new List<T>();
+        // Set the default colour for nodes to red
+        // This is so the root node who hahs no parents,
+        // will in turn be black.
+        Color defaultColor = Color.RED;
+        // Recursive in order traversal to get the keys, starting from root
+        InOrderTraversal(root, keys);
+        // After recursion ends, build a balanced RB Tree based on the keys scraped.
+        rbTree = BuildRBTree(keys, defaultColor);
         return rbTree;
     }
 
-    //needed for the recursive calls
-    private void ConvertToRBTree(Node<T> node, BSTforRBTree<T> rbTree, Color parentColor = Color.BLACK)
+    private void InOrderTraversal(Node<T> current, List<T> keys)
     {
-        if (node == null)
+        // Make sure current node isn't null
+        if (current == null)
+        {
+            return;
+        }
+        // Store the number of keys
+        int numkeys = current.getKeyNum();
+        // Store the key array
+        T[] keyitems = current.getKey();
+        // Store the children array
+        Node<T>[] children = current.getChildren();
+
+        // For every integer up until the number of keys
+        for (int i = 0; i < numkeys; i++)
+        {
+            // perform an in-order traversal and then add the keys to the list on return.
+            InOrderTraversal(children[i], keys);
+            keys.Add(keyitems[i]);
+        }
+        // Perform a last in-order traversal on the last child
+        InOrderTraversal(children[numkeys], keys);
+    }
+
+    // Private method for building the tree, called helper build method
+    private BSTforRBTree<T> BuildRBTree(List<T> keys, Color defaultColor)
+    {
+        BSTforRBTree<T> rbTree = new BSTforRBTree<T>();
+        BuildRBTreeRecursive(keys, rbTree, defaultColor);
+        return rbTree;
+    }
+
+    // Helper build method, requires a key list, a tree structure and the colour of the parent node.
+    private void BuildRBTreeRecursive(List<T> keys, BSTforRBTree<T> rbTree, Color parentColor)
+    {
+        // If the list iis empty, exit the method
+        if (keys.Count == 0)
         {
             return;
         }
 
-        // Determine the color of the current node based on the parent's color
+        // obtain the key in the middle of the list to use as the root
+        int mid = keys.Count / 2;
+        T midKey = keys[mid];
+        // Variable to adjust with the current node's colour
         Color currentNodeColor;
-        if (parentColor == Color.BLACK && node != root)
+
+        // If parent is red, make the child black
+        if (parentColor == Color.BLACK)
         {
             currentNodeColor = Color.RED;
         }
+        // if parent is black, make child red
         else
         {
             currentNodeColor = Color.BLACK;
         }
 
-        // In-order traversal to maintain the sorted order
-        if (node.getChildren().Length > 0 && node.getChildren()[0] != null)
-        {
-            ConvertToRBTree(node.getChildren()[0], rbTree, currentNodeColor);
-        }
+        // Add the middle key and current node to the tree structure
+        rbTree.Add(midKey, currentNodeColor);
 
-        for (int i = 0; i < node.getKeyNum(); i++)
-        {
-            if (node.getKey()[i] != null)
-            {
-                // Insert the current node with the determined color
-                rbTree.Add(node.getKey()[i], currentNodeColor);
+        // Now use the two halves of thhe list to build the tree recursively
+        // Lists will always have the subtree root at the middle in order to balance
+        List<T> leftKeys = keys.GetRange(0, mid);
+        List<T> rightKeys = keys.GetRange(mid + 1, keys.Count - mid - 1);
 
-                if (i < node.getChildren().Length - 1 && node.getChildren()[i + 1] != null)
-                {
-                    ConvertToRBTree(node.getChildren()[i + 1], rbTree, currentNodeColor);
-                }
-            }
-        }
-
-        // Handle the rightmost child
-        if (node.getKey().Length < node.getChildren().Length && node.getChildren()[node.getKey().Length] != null)
-        {
-            ConvertToRBTree(node.getChildren()[node.getKey().Length], rbTree, currentNodeColor);
-        }
+        // This call will build the left subtree
+        BuildRBTreeRecursive(leftKeys, rbTree, currentNodeColor);
+        // This call will build the right subtree
+        BuildRBTreeRecursive(rightKeys, rbTree, currentNodeColor);
     }
+
 
 
 
@@ -935,14 +962,6 @@ public class BSTforRBTree<T> : ISearchable<T> where T : IComparable<T>
         root = null; // Empty BSTforRBTree
     }
 
-
-    public void EnsureRootBlack()
-    {
-        if (this.root != null)
-        {
-            this.root.RB = Color.BLACK;
-        }
-    }
     // Add 
     // Insert an item into a BSTforRBTRee
     // Duplicate items are not inserted
@@ -1024,7 +1043,7 @@ public class Program
         {
 
             Console.WriteLine("\nChoose any of those operations: ");
-            Console.WriteLine("\n1 - PArt A \n2 - LBH \n3 - TwoThreeFourTree");
+            Console.WriteLine("\n1 - Part A (Quad Trees) \n2 - Part B (Lazy Binomial Heap) \n3 - Part C (TwoThreeFourTree) \nx - Exit the program");
             Console.WriteLine("-----------------");
 
 
@@ -1140,23 +1159,21 @@ public class Program
 
             }
 
-        }
-
 
             else if (op == "x")
-        {
-            Console.WriteLine("Exiting...");
-            flag = false;
-
-            if (flag == false)
             {
-                Console.WriteLine("program exited succesfully...");
-            }
+                Console.WriteLine("Exiting...");
+                flag = false;
 
+                if (flag == false)
+                {
+                    Console.WriteLine("program exited succesfully...");
+                }
+
+
+            }
 
         }
 
     }
-
-}
 }

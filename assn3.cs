@@ -306,7 +306,7 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
 
         public void setLeaf(int check)
         {
-             if (check == 0)
+            if (check == 0)
             {
                 leaf = true;
             }
@@ -1016,17 +1016,6 @@ public class Program
     public static void Main(string[] args)
     {
 
-
-        BSTforRBTree<int> bst = new BSTforRBTree<int>();
-
-
-
-
-        Color red = new Color();
-        red = Color.RED;
-        Color black = new Color();
-        black = Color.BLACK;
-
         Console.WriteLine("\nHello there!");
         bool flag = false;
 
@@ -1035,7 +1024,7 @@ public class Program
         {
 
             Console.WriteLine("\nChoose any of those operations: ");
-            Console.WriteLine("\n1 - PArt A \n2 - LBH \n3 - RB tree print\n4 - TwoThreeFourTreePrint");
+            Console.WriteLine("\n1 - PArt A \n2 - LBH \n3 - TwoThreeFourTree");
             Console.WriteLine("-----------------");
 
 
@@ -1092,23 +1081,46 @@ public class Program
                 Console.WriteLine("\n-------------------------\n");
             }
 
-
             if (op == "3")
             {
+                // // Test TwoThreeFourTree
+                // BSTforRBTree<int> bst = new BSTforRBTree<int>();
+                // Color red = new Color();
+                // red = Color.RED;
+                // Color black = new Color();
+                // black = Color.BLACK;
 
-                bst.Add(10, red);
-                bst.Add(20, black);
-                bst.Add(12, red);
-                bst.Add(25, black);
+                // TwoThreeFourTree<int> tt4t = new TwoThreeFourTree<int>();
+                // tt4t.Insert(3);
+                // tt4t.Insert(4);
+                // tt4t.Insert(5);
+                // tt4t.Insert(6);
+                // tt4t.Insert(7);
+                // tt4t.Insert(8);
+                // tt4t.Insert(99);
+                // tt4t.Insert(98);
+                // tt4t.Insert(76);
+                // tt4t.Insert(1);
+                // tt4t.Insert(2);
 
-                bst.Print();
-                Console.WriteLine("\n-------------------------");
+                // // Convert to RB format
+                // tt4t.Convert();
 
+                // Console.WriteLine("\n2-3-4 Tree format\n");
 
-            }
+                // // Print the tree
+                // tt4t.PrintBTree();
 
-            if (op == "4")
-            {
+                // Console.WriteLine("\nConverting to RB tree format\n");
+                // // Convert 2-3-4 tree to a red-black tree
+                // BSTforRBTree<int> redBlackTree = tt4t.Convert();
+                // redBlackTree.Print();
+
+                //testing use 
+                Console.WriteLine("\nEnter values to insert into TwoThreeFourTree (separated by comma): ");
+                string input = Console.ReadLine();
+                string[] separator = input.Split(',');
+
                 TwoThreeFourTree<int> tt4t = new TwoThreeFourTree<int>();
                 tt4t.Insert(3);
                 tt4t.Insert(4);
@@ -1124,12 +1136,12 @@ public class Program
 
                 tt4t.Convert();
 
+                // Print the tree
+                Console.WriteLine("\nTwoThreeFourTree:");
                 tt4t.PrintBTree();
 
-                Console.WriteLine("\n Converting to RB format\n");
-                // tt4t.Print();
-                TwoThreeFourTree<int> twoThreeFourTree = new TwoThreeFourTree<int>();
-                //converting 2-3-4 tree to a red-black tree
+                Console.WriteLine("\nConverting to RB format\n");
+                // Convert 2-3-4 tree to a red-black tree
                 BSTforRBTree<int> redBlackTree = tt4t.Convert();
                 redBlackTree.Print();
 
@@ -1137,20 +1149,21 @@ public class Program
             }
 
 
+
             else if (op == "x")
+        {
+            Console.WriteLine("Exiting...");
+            flag = false;
+
+            if (flag == false)
             {
-                Console.WriteLine("Exiting...");
-                flag = false;
-
-                if (flag == false)
-                {
-                    Console.WriteLine("program exited succesfully...");
-                }
-
-
+                Console.WriteLine("program exited succesfully...");
             }
+
 
         }
 
     }
+
+}
 }

@@ -304,6 +304,19 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
             return leaf;
         }
 
+        public void setLeaf(int check)
+        {
+             if (check == 0)
+            {
+                leaf = true;
+            }
+            // if the passed value is 1, decrement number of keys
+            else if (check == 1)
+            {
+                leaf = false;
+            }
+        }
+
         // Public method to get child node references
         public Node<T>[] getChildren()
         {
@@ -328,6 +341,7 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
                 }
             }
             // Now insert the value at the index
+            setLeaf(1);
             c[index] = child;
             return;
         }
@@ -446,6 +460,13 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
 
             // update index based on new keys array
             index = p.getKeyNum();
+
+            children = p.getChildren();
+
+            if (children.Length <= 0)
+            {
+                p.setLeaf(0);
+            }
 
             // Check if the current node is a leaf node
             // Insert here!

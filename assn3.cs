@@ -884,16 +884,17 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
         T[] keyitems = current.getKey();
         // Store the children array
         Node<T>[] children = current.getChildren();
+        int childindex = children.Length -1;
 
-        // For every integer up until the number of keys
-        for (int i = 0; i < numkeys; i++)
+        // For every integer up until the last child
+        for (int i = 0; i < childindex; i++)
         {
             // perform an in-order traversal and then add the keys to the list on return.
             InOrderTraversal(children[i], keys);
             keys.Add(keyitems[i]);
         }
         // Perform a last in-order traversal on the last child
-        InOrderTraversal(children[numkeys], keys);
+        InOrderTraversal(children[childindex], keys);
     }
 
     // Private method for building the tree, called helper build method

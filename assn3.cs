@@ -525,6 +525,7 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
                     {
                         // Set child index to the current key index (The child left of the key!)
                         childindex = i;
+                        index = children[childindex].getKeyNum();
                         // If child is full, split
                         if (index >= max)
                         {
@@ -550,6 +551,7 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
                             {
                                 // Set child index to i+1 (the child right of the current key!)
                                 childindex = i + 1;
+                                index = children[childindex].getKeyNum();
                                 // If child is full, split
                                 if (index >= max)
                                 {
@@ -568,6 +570,7 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
                         {
                             // Set child index to i+1 (the child right of the current key!)
                             childindex = i + 1;
+                            index = children[childindex].getKeyNum();
                             // If child is full, split
                             if (index >= max)
                             {

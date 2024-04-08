@@ -1322,7 +1322,7 @@ public class Program
                 Console.WriteLine("Heap after adding elements:");
                 heap.Print();
 
-                // Get the maximum element 
+                // Gets the maximum element 
                 Console.WriteLine("\nFront item: " + heap.Front());
 
                 // Remove the maximum element
@@ -1332,8 +1332,8 @@ public class Program
                 Console.WriteLine("\nHeap after removing maximum element:");
                 heap.Print();
 
-                // Get the new maximum element 
-                Console.WriteLine("\nNew maximum element: " + heap.Front());
+                // Gets the updated front element 
+                Console.WriteLine("\nFront item : " + heap.Front());
                 Console.WriteLine("\n-------------------------\n");
             }
 

@@ -9,6 +9,7 @@ DUE DATE: APR 7th 2024
 */
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 
 // Part A: Point Quadtree
 public class PointQuadTree
@@ -108,9 +109,18 @@ public class LazyBinomialHeap<T> where T : IComparable<T>
     // This method removes the biggest item from the heap.
     public void Remove()
     {
+
         if (maxNode == null)
         {
-            throw new InvalidOperationException("Heap is empty");
+            try
+            {
+                throw new NullReferenceException("Heap is empty");
+            }
+            catch
+            {
+                throw new Exception();
+            }
+
         }
 
         // calls the method 
@@ -1301,41 +1311,51 @@ public class Program
                 // Testing LazyBinomialHeap
                 LazyBinomialHeap<int> heap = new LazyBinomialHeap<int>();
 
-                // // Add some elements to the heap
-                // heap.Add(10);
-                // heap.Add(5);
-                // heap.Add(20);
-                // heap.Add(15);
-                // heap.Add(30);
-
                 Console.WriteLine("Enter values to insert into LazyBinomialHeap (separated by comma): ");
                 string input = Console.ReadLine();
                 string[] separator = input.Split(',');
 
                 foreach (string value in separator)
                 {
-                    if (int.TryParse(value, out int intValue))
+                    if (int.TryParse(value.Trim(), out int intValue))
+                    {
                         heap.Add(intValue);
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Invalid input '{value}'. Skipping...");
+                    }
                 }
 
-                // Print the heap
-                Console.WriteLine("Heap after adding elements:");
-                heap.Print();
+                try
+                {
+                    // Print the heap
+                    Console.WriteLine("Heap after adding elements:");
+                    heap.Print();
 
-                // Get the maximum element 
-                Console.WriteLine("\nFront item: " + heap.Front());
+                    // Get and remove the maximum element 
+                    Console.WriteLine("\nFront item: " + heap.Front());
+                    heap.Remove();
 
-                // Remove the maximum element
-                heap.Remove();
+                    // Print the heap after removal
+                    Console.WriteLine("\nHeap after removing the maximum element:");
+                    heap.Print();
 
-                // Print the heap after removal
-                Console.WriteLine("\nHeap after removing maximum element:");
-                heap.Print();
+                    // Get the new maximum element 
+                    Console.WriteLine("\nNew maximum element: " + heap.Front());
+                }
+                catch (InvalidOperationException ex)
+                {
+                    Console.WriteLine("Operation failed: " + ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("An error occurred: " + ex.Message);
+                }
 
-                // Get the new maximum element 
-                Console.WriteLine("\nNew maximum element: " + heap.Front());
                 Console.WriteLine("\n-------------------------\n");
             }
+
 
             if (op == "3")
             {

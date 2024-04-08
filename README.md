@@ -20,11 +20,15 @@ FREDERICK NKWONTA
 
 ### negative values
 
-![alt](./screenshots/)
+![alt](./screenshots/test2.png)
 
 ### Dupelicate values
 
-![alt](./screenshots/)
+![alt](./screenshots/test3.png)
+
+### wrong input and wrong format
+
+![alt](./screenshots/test4.png)
 
 # PART B
 

@@ -1336,11 +1336,6 @@ public class Program
                     // Get and remove the maximum element 
                     Console.WriteLine("\nFront item: " + heap.Front());
                     heap.Remove();
-                // Gets the maximum element 
-                Console.WriteLine("\nFront item: " + heap.Front());
-
-                // Remove the maximum element
-                heap.Remove();
 
                     // Print the heap after removal
                     Console.WriteLine("\nHeap after removing the maximum element:");
@@ -1358,8 +1353,6 @@ public class Program
                     Console.WriteLine("An error occurred: " + ex.Message);
                 }
 
-                // Gets the updated front element 
-                Console.WriteLine("\nFront item : " + heap.Front());
                 Console.WriteLine("\n-------------------------\n");
             }
 

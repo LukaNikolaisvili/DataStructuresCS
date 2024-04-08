@@ -30,11 +30,15 @@ FREDERICK NKWONTA
 
 ![alt](./screenshots/test4.png)
 
+### Empty
+
 # PART B
 
-### Add (Positive values)
+### Add
 
 ![alt](./screenshots/test5.png)
+
+### Remove ()
 
 # PART C
 
@@ -53,3 +57,15 @@ FREDERICK NKWONTA
 ### Convert
 
 ![alt](./screenshots/test6.png)
+
+### insert (Larger values)
+
+![alt](./screenshots/test8a.png)
+
+### Delete (removing a number not in the tree)
+
+![alt](./screenshots/test8b.png)
+
+### search ( looking for a number not in the tree)
+
+![alt](./screenshots/test8c.png)

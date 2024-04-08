@@ -69,3 +69,21 @@ FREDERICK NKWONTA
 ### search ( looking for a number not in the tree)
 
 ![alt](./screenshots/test8c.png)
+
+### Null insertion (Will the program crash if you enter a blank?)
+
+![alt](./screenshots/test_null.png)
+
+### Mix of characters and number (program should ignore characters)
+
+![alt](./screenshots/test_letter.png)
+
+### Inserting duplicate values (Will it ignore them?)
+
+![alt](./screenshots/test_dupe1.png)
+
+### deleting the root?
+
+![alt](./screenshots/test_delroot.png)
+program fails to properly merge along the way and make a new root, this leads to unexpected behaviour and causes an infinite loop when going to search 
+

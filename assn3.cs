@@ -1342,7 +1342,7 @@ public class Program
                     heap.Print();
 
                     // Get the new maximum element 
-                    Console.WriteLine("\nNew maximum element: " + heap.Front());
+                    Console.WriteLine("\nFront item: " + heap.Front());
                 }
                 catch (InvalidOperationException ex)
                 {

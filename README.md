@@ -30,15 +30,15 @@ FREDERICK NKWONTA
 
 ![alt](./screenshots/test4.png)
 
-### Empty
-
 # PART B
 
-### Add
+### Add / front / remove
 
 ![alt](./screenshots/test5.png)
 
-### Remove ()
+### Add /front /remove (invalild inputs)
+
+![alt](./screenshots/test9.png)
 
 # PART C
 

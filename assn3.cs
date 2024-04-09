@@ -753,7 +753,7 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
     }
 
 
-    // Private method for Merge, merges right child into left
+        // Private method for Merge, merges right child into left
     private void Merge(Node<T> x, int i)
     {
         Node<T>[] children = x.getChildren();
@@ -825,165 +825,40 @@ public class TwoThreeFourTree<T> where T : IComparable<T>
     }
 
     // Returns true if key k is found; false otherwise (4 marks).
-    public bool Search(T k)
-    {
-        // Set the current node as the root node
-        Node<T> current = root;
-        // Set the parent node also as the root node
-        Node<T> parent = root;
-        // Array that will hold the children which will be updated as code progresses
-        Node<T>[] children;
-        // Index to hold what child to go down!
-        int childindex = 0;
-        // index to hold number of children
-        int numchildren = 0;
-        // Maximum number of keys
-        int max = 3;
+    public bool Search(T k) {
+    Node<T> current = root;
 
-        while (current != null) // Recursion without a recursive call
-        {
-            Node<T> check = current;
-            // Get the array of keys from the current node
-            // Array that will hold the keys which will be updated as code progresses
-            T[] keys = current.getKey();
-
-            // update index based on new keys array
-            int index = current.getKeyNum();
-
-            // Update the array of keys
-            children = current.getChildren();
-
-            for (int j = 0; j < 4; j++)
-            {
-                if (children[j] != null)
-                {
-                    numchildren++;
-                }
-            }
-
-            // Iterate through each key from left to right
-            for (int i = 0; i < index; i++)
-            {
-                // See if the key matches, if so stop the search
-                if (keys[i].Equals(k))
-                {
-                    return true;
-                }
-                // If the key is bigger than k
-                if (keys[i].CompareTo(k) > 0)
-                {
-                    // Set child index to the current key index (The child left of the key!)
-                    childindex = i;
-                    if (children[childindex] == null)
-                    {
-                        // No child here, so no key. So break out
-                        break;
-                    }
-                    // Set parent as the current node
-                    parent = current;
-                    // Proceed to the child
-                    current = children[childindex];
-                    // Break the loop and start over from the top!
-                    break;
-                }
-                // Otherwise if the key is less than k
-                else if (keys[i].CompareTo(k) < 0)
-                {
-                    // Check if the next key exists
-                    if (i + 1 < index)
-                    {
-                        // If it does check if the next key is greater than k
-                        // If it isn't, the loop will simply go to the next iteration
-                        // No additional code needed for that.
-                        if (keys[i + 1].CompareTo(k) > 0)
-                        {
-                            // Set child index to i+1 (the child right of the current key!)
-                            childindex = i + 1;
-                            if (children[childindex] == null)
-                            {
-                                // No child here, so no key. So break out
-                                break;
-                            }
-                            index = children[childindex].getKeyNum();
-                            // Set parent as the current node
-                            parent = current;
-                            // Then move to the next child
-                            current = children[childindex];
-                            // break out of the loop and start from the top
-                            break;
-                        }
-                    }
-                    // If there is no next key, go to the rightmost child
-                    else
-                    {
-                        // Set child index to i+1 (the child right of the current key!)
-                        childindex = i + 1;
-                        if (childindex >= max)
-                        {
-                            // Make sure child is in bounds
-                            childindex = 3;
-                        }
-                        if (children[childindex] == null)
-                        {
-                            // No child here, so no key. So break out
-                            break;
-                        }
-                        index = children[childindex].getKeyNum();
-                        // Set the parent node as the current node
-                        parent = current;
-                        // Then set the current node as the rightmost child
-                        current = children[childindex];
-                        // break the loop and start from the top
-                        break;
-                    }
-                }
-            }
-            // If we're in a leaf node, and we haven't found the key
-            if (check.checkLeaf())
-            {
-                // Get the children of the parent node again
-                children = parent.getChildren();
-                // Get number of children
-                numchildren = 0;
-                for (int j = 0; j < 4; j++)
-                {
-                    if (children[j] != null)
-                    {
-                        numchildren++;
-                    }
-                }
-                // Search for the index of the current child
-                for (int i = 0; i < 4; i++)
-                {
-                    // Once we find it, store it and break out
-                    if (children[i] == current)
-                    {
-                        childindex = i;
-                        break;
-                    }
-                    else
-                    {
-                        // set child index to out of bounds until otherwise.
-                        childindex = 5;
-                    }
-                }
-                // Now based on what the childindex variable is, in bounds or out of bounds
-                if (childindex < numchildren)
-                {
-                    // Go down the next sibling
-                    current = children[childindex + 1];
-                }
-                else
-                {
-                    // No more siblings, no keys found, finally return false.
-                    return false;
-                }
+    while (current != null) {
+        //Generic keys 
+        T[] keys = current.getKey();
+    
+        int numKeys = current.getKeyNum();
+        //flag concept
+        bool found = false;
+        //iterating 
+        for (int i = 0; i < numKeys; i++) {
+            //we will going to compare the k with keys at index i
+            if (k.CompareTo(keys[i]) == 0) {
+                // Key found
+                return true; //change the flag
+            } else if (k.CompareTo(keys[i]) < 0) {
+                // Go to the left child
+                current = current.getChildren()[i];
+                //flag set to true
+                found = true;
+                //break out
+                break;
             }
         }
-        // No result, return false
-        return false;
+        //if not found
+        if (!found) {
+            // Go to the right child if the key is greater than all keys
+            current = current.getChildren()[numKeys];
+        }
     }
 
+    return false; // Key not found
+}
 
 
     // Builds and returns the equivalent red-black tree. (8 marks)
@@ -1386,7 +1261,6 @@ public class Program
 
                     if (tt4t.IsEmpty())
                     {
-                        Console.WriteLine("The tree is empty. There are no elements to remove.");
                         break;
                     }
                     else
